@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>画像コピー</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#copyImage {
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 全画面ボタン */
+#fullscreenButton {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+
+    font-size: 24px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* コピー完了表示 */
+#message {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+
+    padding: 10px 18px;
+
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.2s;
+}
+
+#message.show {
+    opacity: 1;
+}
+</style>
+</head>
+
+<body>
+
+<img
+    id="copyImage"
+    src="https://i.ytimg.com/vi/uVgPrRdq4QU/maxresdefault.jpg"
+    crossorigin="anonymous"
+    alt=""
+>
+
+<button id="fullscreenButton" aria-label="全画面">⛶</button>
+
+<div id="message"></div>
+
+<script>
+const image = document.getElementById("copyImage");
+const fullscreenButton = document.getElementById("fullscreenButton");
+const message = document.getElementById("message");
+
+
+// ========================================
+// 画像をタップ → 画像そのものをコピー
+// ========================================
+image.addEventListener("click", async () => {
+
+    try {
+
+        // 画像をBlobとして取得
+        const response = await fetch(image.src);
+
+        if (!response.ok) {
+            throw new Error("画像取得失敗");
+        }
+
+        const blob = await response.blob();
+
+        // 画像をPNGに変換
+        const bitmap = await createImageBitmap(blob);
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(bitmap, 0, 0);
+
+        const pngBlob = await new Promise(resolve => {
+            canvas.toBlob(resolve, "image/png");
+        });
+
+        // クリップボードへ画像を書き込む
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                "image/png": pngBlob
+            })
+        ]);
+
+        showMessage("画像をコピーしました");
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage("画像をコピーできませんでした");
+
+    }
+});
+
+
+// ========================================
+// 全画面
+// ========================================
+fullscreenButton.addEventListener("click", async () => {
+
+    try {
+
+        if (!document.fullscreenElement) {
+
+            await document.documentElement.requestFullscreen();
+
+        } else {
+
+            await document.exitFullscreen();
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+});
+
+
+// ========================================
+// 全画面状態
+// ========================================
+document.addEventListener("fullscreenchange", () => {
+
+    if (document.fullscreenElement) {
+
+        fullscreenButton.textContent = "×";
+
+    } else {
+
+        fullscreenButton.textContent = "⛶";
+
+    }
+
+});
+
+
+// ========================================
+// メッセージ
+// ========================================
+function showMessage(text) {
+
+    message.textContent = text;
+
+    message.classList.add("show");
+
+    setTimeout(() => {
+
+        message.classList.remove("show");
+
+    }, 1200);
+
+}
+</script>
+
+</body>
+</html>
