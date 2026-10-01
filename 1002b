@@ -1,0 +1,4888 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+
+    <title>小島凪紗（櫻坂46）応援サイト｜プロフィール・MVまとめ</title>
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="description"
+    content="櫻坂46 小島凪紗ちゃんのプロフィール、MV、Vlog、個人PVをまとめた応援サイトです。">
+
+    <meta name="author" content="小島凪紗ちゃん応援局">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="小島凪紗（櫻坂46）応援サイト">
+    <meta property="og:description"
+    content="プロフィール・MVまとめ。小島凪紗ちゃんの魅力を集約した応援サイト。">
+    <meta property="og:url" content="https://konnagi.com/">
+    <meta property="og:image" content="https://konnagi.com/websitecard.png">
+    <meta property="og:site_name" content="小島凪紗ちゃん応援局">
+    <meta property="og:locale" content="ja_JP">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title"
+    content="小島凪紗 応援サイト｜プロフィール・MVまとめ">
+    <meta name="twitter:description"
+    content="プロフィール・MVまとめサイト">
+    <meta name="twitter:image"
+    content="https://konnagi.com/websitecard.png">
+
+    <link rel="canonical" href="https://konnagi.com/">
+
+    <link rel="icon"
+    href="https://konnagi.com/icon.png"
+    type="image/png">
+
+    <link rel="preconnect"
+    href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+    <!-- Google Analytics -->
+
+    <script async
+      src="https://www.googletagmanager.com/gtag/js?id=G-589P40RKKZ"></script>
+
+      <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-589P40RKKZ');
+      </script>
+
+    <!-- JSON-LD -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "小島凪紗",
+        "alternateName": "Kojima Nagisa",
+        "birthDate": "2005-07-07",
+        "birthPlace": {
+          "@type": "Place",
+          "name": "長野県"
+        },
+        "memberOf": {
+          "@type": "MusicGroup",
+          "name": "櫻坂46"
+        },
+        "url": "https://konnagi.com/"
+      }
+    </script>
+
+  <style>
+
+    /* =========================================================
+    Variables
+    ========================================================= */
+
+    :root {
+
+      --sakura: #e86a9a;
+      --sakura-soft: #f4a4c0;
+      --sakura-pale: #fde8ef;
+
+      --ink: #2a2430;
+      --muted: #7a6f78;
+
+      --paper: rgba(255, 252, 250, .78);
+
+      --line: rgba(232, 106, 154, .18);
+
+      --shadow:
+      0 18px 50px rgba(90, 40, 70, .12);
+
+    }
+
+
+    /* =========================================================
+    Reset
+    ========================================================= */
+
+    *,
+    *::before,
+    *::after {
+
+      box-sizing: border-box;
+
+      -webkit-tap-highlight-color: transparent;
+
+    }
+
+
+    html,
+    body {
+
+      width: 100%;
+      height: 100%;
+
+      margin: 0;
+      padding: 0;
+
+    }
+
+
+    html {
+
+      overflow: hidden;
+
+    }
+
+
+    body {
+
+      font-family:
+      "Zen Kaku Gothic New",
+      "Hiragino Kaku Gothic ProN",
+      "Yu Gothic",
+      sans-serif;
+
+      color: var(--ink);
+
+      background:
+      radial-gradient(
+      circle at 10% 10%,
+      rgba(244, 164, 192, .34),
+      transparent 32%
+    ),
+    radial-gradient(
+    circle at 90% 90%,
+    rgba(232, 106, 154, .20),
+    transparent 34%
+  ),
+  linear-gradient(
+  135deg,
+  #fffafc 0%,
+  #fdf4f8 45%,
+  #f9eef4 100%
+);
+
+overflow: hidden;
+
+touch-action: pan-y;
+
+}
+
+
+body.modal-open {
+
+  overflow: hidden;
+
+}
+
+
+body::before {
+
+  content: "";
+
+  position: fixed;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+  radial-gradient(
+  circle at 25% 20%,
+  rgba(255, 255, 255, .70),
+  transparent 30%
+),
+radial-gradient(
+circle at 80% 30%,
+rgba(255, 255, 255, .40),
+transparent 26%
+);
+
+z-index: 0;
+
+}
+
+
+/* =========================================================
+Stage
+========================================================= */
+
+.stage {
+
+  position: relative;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  z-index: 1;
+
+  transform: translateZ(0);
+
+}
+
+
+/* =========================================================
+Cube container
+
+3Dは完全に無効化
+========================================================= */
+
+.cube {
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  transform: none;
+
+  transform-style: flat;
+
+  transition: none;
+
+}
+
+
+/* =========================================================
+Page
+========================================================= */
+
+.page {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+
+  background: transparent;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transform: translateX(100%);
+
+  transition:
+  transform .65s cubic-bezier(.22, .61, .36, 1),
+  opacity .35s ease,
+  visibility 0s linear .65s;
+
+  z-index: 1;
+
+}
+
+
+.page.is-front {
+
+  pointer-events: auto;
+
+  opacity: 1;
+
+  visibility: visible;
+
+  transform: translateX(0);
+
+  z-index: 3;
+
+  transition:
+  transform .65s cubic-bezier(.22, .61, .36, 1),
+  opacity .35s ease,
+  visibility 0s;
+
+}
+
+
+/*
+* 前方向へ移動するときのページ
+*/
+
+.page.page-from-left {
+
+  transform: translateX(-100%);
+
+  opacity: 0;
+
+  visibility: visible;
+
+  z-index: 2;
+
+}
+
+
+/*
+* 後方向へ移動するときのページ
+*/
+
+.page.page-from-right {
+
+  transform: translateX(100%);
+
+  opacity: 0;
+
+  visibility: visible;
+
+  z-index: 2;
+
+}
+
+
+.page.page-enter-left {
+
+  transform: translateX(-100%);
+
+  opacity: 0;
+
+  visibility: visible;
+
+  z-index: 4;
+
+}
+
+
+.page.page-enter-right {
+
+  transform: translateX(100%);
+
+  opacity: 0;
+
+  visibility: visible;
+
+  z-index: 4;
+
+}
+
+
+/* =========================================================
+Scroll container
+========================================================= */
+
+.page-scroll {
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  -webkit-overflow-scrolling: touch;
+
+  touch-action: pan-y;
+
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
+
+  scrollbar-width: thin;
+
+  scrollbar-color:
+  rgba(232, 106, 154, .25)
+  transparent;
+
+}
+
+
+.page:not(.is-front)
+.page-scroll {
+
+  overflow-y: hidden;
+
+}
+
+
+.page-scroll::-webkit-scrollbar {
+
+  width: 6px;
+
+}
+
+
+.page-scroll::-webkit-scrollbar-track {
+
+  background: transparent;
+
+}
+
+
+.page-scroll::-webkit-scrollbar-thumb {
+
+  background:
+  rgba(232, 106, 154, .25);
+
+  border-radius: 999px;
+
+}
+
+
+/* =========================================================
+Profile
+========================================================= */
+
+.profile-section {
+
+  min-height: 100%;
+
+  padding:
+  60px
+  24px
+  110px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+.profile-container {
+
+  width: min(100%, 980px);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 50px;
+
+  padding: 30px;
+
+  border:
+  1px solid
+  rgba(232, 106, 154, .18);
+
+  border-radius: 30px;
+
+  background:
+  rgba(255, 252, 250, .78);
+
+  box-shadow: var(--shadow);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+}
+
+
+.profile-image {
+
+  width: min(38vw, 330px);
+
+  flex: 0 0 auto;
+
+  aspect-ratio: 1 / 1;
+
+  border-radius: 26px;
+
+  overflow: hidden;
+
+  box-shadow:
+  0 20px 50px
+  rgba(120, 50, 80, .18);
+
+}
+
+
+.profile-image img {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+
+}
+
+
+.profile-text {
+
+  flex: 1;
+
+  min-width: 0;
+
+}
+
+
+.eyebrow {
+
+  margin-bottom: 8px;
+
+  color: var(--sakura);
+
+  font-family:
+  "Cormorant Garamond",
+  serif;
+
+  font-size: 17px;
+
+  font-style: italic;
+
+  letter-spacing: .12em;
+
+}
+
+
+.profile-text h1,
+.youtube-title {
+
+  margin: 0;
+
+  font-family:
+  "Cormorant Garamond",
+  serif;
+
+  font-weight: 600;
+
+  letter-spacing: .02em;
+
+}
+
+
+.profile-text h1 {
+
+  font-size:
+  clamp(42px, 6vw, 76px);
+
+  line-height: 1;
+
+}
+
+
+.profile-en {
+
+  margin:
+  10px 0 28px;
+
+  color: var(--muted);
+
+  font-family:
+  "Cormorant Garamond",
+  serif;
+
+  font-size: 20px;
+
+  letter-spacing: .12em;
+
+}
+
+
+.profile-text ul {
+
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+
+}
+
+
+.profile-text li {
+
+  display: grid;
+
+  grid-template-columns:
+  7em 1fr;
+
+  gap: 12px;
+
+  padding: 10px 0;
+
+  border-bottom:
+  1px solid
+  rgba(232, 106, 154, .12);
+
+  line-height: 1.7;
+
+}
+
+
+.profile-text li strong {
+
+  color: var(--muted);
+
+  font-weight: 500;
+
+}
+
+
+.regulars {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+}
+
+
+.regulars a {
+
+  color: var(--ink);
+
+  text-decoration: none;
+
+  transition:
+  color .2s ease;
+
+}
+
+
+.regulars a:hover {
+
+  color: var(--sakura);
+
+}
+
+
+/* =========================================================
+Archive section
+========================================================= */
+
+.youtube-section {
+
+  min-height: 100%;
+
+  padding:
+  60px
+  max(24px, 5vw)
+  110px;
+
+}
+
+
+.youtube-title {
+
+  margin-bottom: 30px;
+
+  font-size:
+  clamp(44px, 7vw, 82px);
+
+  line-height: .95;
+
+}
+
+
+.youtube-grid {
+
+  width: min(1200px, 100%);
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+  repeat(2, minmax(0, 1fr));
+
+  gap: 22px;
+
+}
+
+
+/* =========================================================
+YouTube / Media card
+========================================================= */
+
+.youtube-card {
+
+  position: relative;
+
+  display: block;
+
+  width: 100%;
+
+  padding: 0;
+
+  border:
+  1px solid
+  rgba(232, 106, 154, .16);
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  background:
+  rgba(255, 252, 250, .82);
+
+  box-shadow:
+  0 12px 34px
+  rgba(90, 40, 70, .10);
+
+  cursor: pointer;
+
+  text-align: left;
+
+  font: inherit;
+
+  color: inherit;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  content-visibility: auto;
+
+  contain-intrinsic-size:
+  360px 300px;
+
+  contain:
+  layout
+  paint
+  style;
+
+  transition:
+  transform .25s ease,
+  box-shadow .25s ease;
+
+}
+
+
+.youtube-card:hover {
+
+  transform:
+  translateY(-5px);
+
+  box-shadow:
+  0 18px 42px
+  rgba(90, 40, 70, .15);
+
+}
+
+
+.youtube-thumbnail {
+
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  background: #eee;
+
+}
+
+
+.youtube-thumbnail img {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+  transform .35s ease;
+
+}
+
+
+.youtube-card:hover
+.youtube-thumbnail img {
+
+  transform:
+  scale(1.035);
+
+}
+
+
+.youtube-info {
+
+  padding:
+  15px 17px 17px;
+
+}
+
+
+.youtube-name {
+
+  min-height: 1.5em;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  line-height: 1.6;
+
+}
+
+
+.youtube-loading,
+.youtube-error {
+
+  grid-column: 1 / -1;
+
+  padding: 60px 20px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+}
+
+
+.media-divider {
+
+  grid-column: 1 / -1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 8px 2px 2px;
+
+  color: var(--muted);
+
+  font-family:
+  "Cormorant Garamond",
+  serif;
+
+  font-size: 18px;
+
+  letter-spacing: .12em;
+
+}
+
+
+.media-divider::before,
+.media-divider::after {
+
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background:
+  rgba(232, 106, 154, .28);
+
+}
+
+
+/* =========================================================
+Navigation
+========================================================= */
+
+.nav-arrow {
+
+  position: fixed;
+
+  top: 50%;
+
+  z-index: 50;
+
+  width: 48px;
+  height: 48px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  transform:
+  translateY(-50%);
+
+  background:
+  rgba(255,255,255,.72);
+
+  color: var(--sakura);
+
+  box-shadow:
+  0 8px 25px
+  rgba(80,30,60,.12);
+
+  cursor: pointer;
+
+  font-size: 24px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition:
+  transform .2s ease,
+  background .2s ease;
+
+}
+
+
+.nav-arrow:hover {
+
+  transform:
+  translateY(-50%)
+  scale(1.05);
+
+  background:
+  rgba(255,255,255,.95);
+
+}
+
+
+.nav-arrow.prev {
+
+  left: 18px;
+
+}
+
+
+.nav-arrow.next {
+
+  right: 18px;
+
+}
+
+
+/* =========================================================
+Indicator
+========================================================= */
+
+.page-indicator {
+
+  position: fixed;
+
+  left: 50%;
+  bottom: 22px;
+
+  z-index: 50;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+  8px 13px;
+
+  border-radius: 999px;
+
+  transform:
+  translateX(-50%);
+
+  background:
+  rgba(255,255,255,.70);
+
+  box-shadow:
+  0 8px 25px
+  rgba(80,30,60,.10);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+}
+
+
+.indicator {
+
+  width: 7px;
+  height: 7px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+  rgba(232,106,154,.25);
+
+  transition:
+  transform .25s ease,
+  background .25s ease;
+
+  cursor: pointer;
+
+}
+
+
+.indicator.active {
+
+  background:
+  var(--sakura);
+
+  transform:
+  scale(1.35);
+
+}
+
+
+.indicator-label {
+
+  margin-left: 5px;
+
+  color: var(--muted);
+
+  font-family:
+  "Cormorant Garamond",
+  serif;
+
+  font-size: 14px;
+
+  letter-spacing: .05em;
+
+}
+
+
+/* =========================================================
+Swipe guide
+========================================================= */
+
+.swipe-guide {
+
+  position: fixed;
+
+  left: 50%;
+  bottom: 72px;
+
+  z-index: 45;
+
+  transform:
+  translateX(-50%);
+
+  padding:
+  7px 14px;
+
+  border-radius: 999px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+  background:
+  rgba(255,255,255,.72);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  pointer-events: none;
+
+  opacity: 1;
+
+  transition:
+  opacity .5s ease;
+
+}
+
+
+.swipe-guide.is-hidden {
+
+  opacity: 0;
+
+}
+
+
+/* =========================================================
+Edge
+========================================================= */
+
+.edge-hint {
+
+  position: fixed;
+
+  top: 0;
+  bottom: 0;
+
+  width: 8px;
+
+  z-index: 40;
+
+  pointer-events: none;
+
+  opacity: .5;
+
+}
+
+
+.edge-hint.left {
+
+  left: 0;
+
+  background:
+  linear-gradient(
+  90deg,
+  rgba(232,106,154,.18),
+  transparent
+);
+
+}
+
+
+.edge-hint.right {
+
+  right: 0;
+
+  background:
+  linear-gradient(
+  270deg,
+  rgba(232,106,154,.18),
+  transparent
+);
+
+}
+
+
+/* =========================================================
+Modal
+========================================================= */
+
+.video-modal {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 999;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+  rgba(20,10,18,.82);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transition:
+  opacity .25s ease,
+  visibility .25s ease;
+
+}
+
+
+.video-modal.is-open {
+
+  opacity: 1;
+
+  visibility: visible;
+
+}
+
+
+.video-modal-inner {
+
+  position: relative;
+
+  width:
+  min(1100px, 100%);
+
+  aspect-ratio: 16 / 9;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  background: #000;
+
+  box-shadow:
+  0 30px 90px
+  rgba(0,0,0,.4);
+
+}
+
+
+.video-modal iframe {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+}
+
+
+/* =========================================================
+Close
+========================================================= */
+
+.video-modal-close {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom:
+  calc(
+  20px +
+  env(safe-area-inset-bottom)
+);
+
+z-index: 1002;
+
+width: 52px;
+height: 52px;
+
+margin: 0;
+
+padding: 0;
+
+border: 0;
+
+border-radius: 50%;
+
+transform:
+translateX(-50%);
+
+background:
+rgba(255,255,255,.94);
+
+color: #333;
+
+box-shadow:
+0 8px 30px
+rgba(0,0,0,.28);
+
+font-size: 30px;
+
+line-height: 1;
+
+display: flex;
+
+align-items: center;
+justify-content: center;
+
+cursor: pointer;
+
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+
+transition:
+transform .2s ease,
+background .2s ease;
+
+}
+
+
+.video-modal-close:hover {
+
+  transform:
+  translateX(-50%)
+  scale(1.06);
+
+  background:
+  rgba(255,255,255,1);
+
+}
+
+
+.video-modal-close:active {
+
+  transform:
+  translateX(-50%)
+  scale(.94);
+
+}
+
+
+/* =========================================================
+Mobile
+========================================================= */
+
+@media (max-width: 768px) {
+
+  body {
+
+    background:
+    linear-gradient(
+    180deg,
+    #fff7f9 0%,
+    #f7edf3 100%
+  );
+
+}
+
+
+body::before {
+
+  display: none;
+
+}
+
+
+.profile-container,
+.youtube-card,
+.nav-arrow,
+.page-indicator,
+.swipe-guide {
+
+  backdrop-filter: none;
+
+  -webkit-backdrop-filter: none;
+
+}
+
+
+/* -------------------------------------------------------
+Mobile page transition
+------------------------------------------------------- */
+
+.page {
+
+  transition:
+  transform .35s ease,
+  opacity .25s ease,
+  visibility 0s linear .35s;
+
+}
+
+
+.page.is-front {
+
+  transition:
+  transform .35s ease,
+  opacity .25s ease,
+  visibility 0s;
+
+}
+
+
+/* -------------------------------------------------------
+Profile
+------------------------------------------------------- */
+
+.profile-section {
+
+  min-height: 100%;
+
+  padding:
+  28px
+  16px
+  100px;
+
+  align-items:
+  flex-start;
+
+}
+
+
+.profile-container {
+
+  flex-direction: column;
+
+  gap: 22px;
+
+  padding: 18px;
+
+  text-align: center;
+
+  background:
+  rgba(255,252,250,.94);
+
+  border-radius: 24px;
+
+}
+
+
+.profile-image {
+
+  width: 72%;
+
+  max-width: 280px;
+
+  margin: 0 auto;
+
+  flex: none;
+
+}
+
+
+.profile-text ul {
+
+  text-align: left;
+
+}
+
+
+.profile-text li {
+
+  grid-template-columns:
+  6.2em 1fr;
+
+  gap: 8px;
+
+}
+
+
+/* -------------------------------------------------------
+Archive
+------------------------------------------------------- */
+
+.youtube-section {
+
+  min-height: 100%;
+
+  padding:
+  28px
+  16px
+  100px;
+
+}
+
+
+.youtube-grid {
+
+  grid-template-columns: 1fr;
+
+  gap: 16px;
+
+}
+
+
+.youtube-card {
+
+  background:
+  rgba(255,252,250,.94);
+
+  transition: none;
+
+}
+
+
+.youtube-card:hover {
+
+  transform: none;
+
+  box-shadow:
+  0 12px 34px
+  rgba(90,40,70,.10);
+
+}
+
+
+.youtube-card:hover
+.youtube-thumbnail img {
+
+  transform: none;
+
+}
+
+
+/* -------------------------------------------------------
+Navigation
+------------------------------------------------------- */
+
+.nav-arrow {
+
+  width: 40px;
+  height: 40px;
+
+  font-size: 20px;
+
+}
+
+
+.nav-arrow.prev {
+
+  left: 8px;
+
+}
+
+
+.nav-arrow.next {
+
+  right: 8px;
+
+}
+
+
+.indicator-label {
+
+  display: none;
+
+}
+
+
+.swipe-guide {
+
+  bottom: 62px;
+
+}
+
+
+/* -------------------------------------------------------
+Modal
+------------------------------------------------------- */
+
+.video-modal {
+
+  padding:
+  10px;
+
+  align-items:
+  center;
+
+}
+
+
+.video-modal-inner {
+
+  width: 100%;
+
+  max-width: none;
+
+  aspect-ratio: 16 / 9;
+
+  border-radius: 12px;
+
+}
+
+
+.video-modal-close {
+
+  left: 50%;
+
+  bottom:
+  calc(
+  16px +
+  env(safe-area-inset-bottom)
+);
+
+width: 50px;
+height: 50px;
+
+z-index: 1002;
+
+font-size: 28px;
+
+}
+
+}
+
+
+/* =========================================================
+Small mobile
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .profile-text h1 {
+
+    font-size: 42px;
+
+  }
+
+
+  .youtube-title {
+
+    font-size: 54px;
+
+  }
+
+
+  .profile-container {
+
+    padding: 16px;
+
+  }
+
+
+  .youtube-info {
+
+    padding:
+    13px
+    14px
+    15px;
+
+  }
+
+
+  .video-modal-close {
+
+    width: 48px;
+    height: 48px;
+
+    font-size: 27px;
+
+  }
+
+}
+
+
+/* =========================================================
+Reduced Motion
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .page {
+
+    transition: none !important;
+
+  }
+
+
+  .youtube-card,
+  .youtube-thumbnail img,
+  .nav-arrow,
+  .indicator,
+  .video-modal,
+  .video-modal-close {
+
+    transition: none;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+  <!-- =======================================================
+  Stage
+  ======================================================== -->
+
+  <main
+    class="stage"
+    id="stage">
+
+    <div
+      class="cube"
+      id="cube">
+
+
+      <!-- ===================================================
+      PAGE 1 : PROFILE
+      ==================================================== -->
+
+      <section
+        class="page page-1 is-front"
+        data-page="0"
+        aria-label="Profile">
+
+
+        <div class="page-scroll">
+
+
+          <div class="profile-section">
+
+
+            <div class="profile-container">
+
+
+              <div class="profile-image">
+
+                <img
+                src="https://konnagi.com/icon.png"
+                alt="小島凪紗"
+                width="330"
+                height="330"
+                decoding="async">
+
+              </div>
+
+
+            <div class="profile-text">
+
+
+              <div class="eyebrow">
+                Sakurazaka46
+              </div>
+
+
+            <h1>
+              小島 凪紗
+            </h1>
+
+
+          <p class="profile-en">
+            KOJIMA NAGISA
+          </p>
+
+
+        <ul>
+
+
+          <li>
+
+            <strong>
+              生年月日
+            </strong>
+
+          <span>
+            2005年7月7日
+          </span>
+
+      </li>
+
+
+    <li>
+
+      <strong>
+        星座
+      </strong>
+
+    <span>
+      かに座
+    </span>
+
+</li>
+
+
+<li>
+
+  <strong>
+    身長
+  </strong>
+
+<span>
+  165cm
+</span>
+
+</li>
+
+
+<li>
+
+  <strong>
+    出身地
+  </strong>
+
+<span>
+  長野県
+</span>
+
+</li>
+
+
+<li>
+
+  <strong>
+    血液型
+  </strong>
+
+<span>
+  不明
+</span>
+
+</li>
+
+
+<li>
+
+  <strong>
+    レギュラー
+  </strong>
+
+<span class="regulars">
+
+  <a
+    href="https://tver.jp/series/srx97ftk3w"
+    target="_blank"
+    rel="noopener">
+    テレビ朝日「サクラミーツ」
+  </a>
+
+
+<a
+  href="https://radiko.jp/r_seasons/10002455"
+  target="_blank"
+  rel="noopener">
+  ニッポン放送「櫻坂46 こちら有楽町星空放送局」
+</a>
+
+</span>
+
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================
+PAGE 2 : PERSONAL
+==================================================== -->
+
+<section
+  class="page page-2"
+  data-page="1"
+  aria-label="Personal">
+
+
+  <div class="page-scroll">
+
+
+    <div class="youtube-section">
+
+
+      <div class="eyebrow">
+        Archive
+      </div>
+
+
+    <h1 class="youtube-title">
+      Personal
+    </h1>
+
+
+  <div
+    id="personalGrid"
+    class="youtube-grid">
+
+
+    <div class="youtube-loading">
+      読み込み中…
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================
+PAGE 3 : MUSIC
+==================================================== -->
+
+<section
+  class="page page-3"
+  data-page="2"
+  aria-label="Music">
+
+
+  <div class="page-scroll">
+
+
+    <div class="youtube-section">
+
+
+      <div class="eyebrow">
+        Archive
+      </div>
+
+
+    <h1 class="youtube-title">
+      Music
+    </h1>
+
+
+  <div
+    id="musicGrid"
+    class="youtube-grid">
+
+
+    <div class="youtube-loading">
+      読み込み中…
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================
+PAGE 4 : DOCUMENTARY
+==================================================== -->
+
+<section
+  class="page page-4"
+  data-page="3"
+  aria-label="Documentary">
+
+
+  <div class="page-scroll">
+
+
+    <div class="youtube-section">
+
+
+      <div class="eyebrow">
+        Archive
+      </div>
+
+
+    <h1 class="youtube-title">
+      Documentary
+    </h1>
+
+
+  <div
+    id="documentaryGrid"
+    class="youtube-grid">
+
+
+    <div class="youtube-loading">
+      読み込み中…
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<!-- ===================================================
+PAGE 5 : MEDIA
+==================================================== -->
+
+<section
+  class="page page-5"
+  data-page="4"
+  aria-label="Media">
+
+
+  <div class="page-scroll">
+
+
+    <div class="youtube-section">
+
+
+      <div class="eyebrow">
+        Archive
+      </div>
+
+
+    <h1 class="youtube-title">
+      Media
+    </h1>
+
+
+  <div
+    id="mediaGrid"
+    class="youtube-grid">
+
+
+    <div class="youtube-loading">
+      読み込み中…
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+</div>
+
+</main>
+
+<!-- =======================================================
+Edge
+======================================================== -->
+
+<div class="edge-hint left"></div>
+<div class="edge-hint right"></div>
+
+<!-- =======================================================
+Navigation
+======================================================== -->
+
+<button
+  class="nav-arrow prev"
+  id="prevButton"
+  type="button"
+  aria-label="前のページ">
+  ‹ </button>
+
+  <button
+    class="nav-arrow next"
+    id="nextButton"
+    type="button"
+    aria-label="次のページ">
+    › </button>
+
+    <!-- =======================================================
+    Swipe guide
+    ======================================================== -->
+
+    <div
+      class="swipe-guide"
+      id="swipeGuide">
+      ← スワイプでページ移動 →
+    </div>
+
+  <!-- =======================================================
+  Indicator
+  ======================================================== -->
+
+  <div class="page-indicator">
+
+    <button
+      class="indicator active"
+      data-index="0"
+      type="button"
+      aria-label="Profile">
+    </button>
+
+
+  <button
+    class="indicator"
+    data-index="1"
+    type="button"
+    aria-label="Personal">
+  </button>
+
+
+<button
+  class="indicator"
+  data-index="2"
+  type="button"
+  aria-label="Music">
+</button>
+
+
+<button
+  class="indicator"
+  data-index="3"
+  type="button"
+  aria-label="Documentary">
+</button>
+
+
+<button
+  class="indicator"
+  data-index="4"
+  type="button"
+  aria-label="Media">
+</button>
+
+
+<span
+  class="indicator-label"
+  id="pageLabel">
+  Profile
+</span>
+
+</div>
+
+<!-- =======================================================
+Video modal
+======================================================== -->
+
+<div
+  class="video-modal"
+  id="videoModal"
+  aria-hidden="true">
+
+  <div class="video-modal-inner">
+
+
+    <button
+      class="video-modal-close"
+      id="videoModalClose"
+      type="button"
+      aria-label="閉じる">
+      ×
+    </button>
+
+
+  <iframe
+    id="videoFrame"
+    title="YouTube動画"
+    allow="
+    autoplay;
+    encrypted-media;
+    picture-in-picture;
+    web-share
+    "
+    allowfullscreen>
+  </iframe>
+
+
+</div>
+
+</div>
+
+<script>
+
+  /* =========================================================
+  Configuration
+  ========================================================= */
+
+  const pageNames = [
+  "Profile",
+  "Personal",
+  "Music",
+  "Documentary",
+  "Media"
+];
+
+
+const categoryContainers = {
+
+  Personal:
+  "personalGrid",
+
+  Music:
+  "musicGrid",
+
+  Documentary:
+  "documentaryGrid"
+
+};
+
+
+/*
+* Media API
+*/
+
+const MEDIA_API_URL =
+"https://api.konnagi.com";
+
+
+/* =========================================================
+DOM
+========================================================= */
+
+const stage =
+document.getElementById(
+"stage"
+);
+
+
+const cube =
+document.getElementById(
+"cube"
+);
+
+
+const pages =
+Array.from(
+document.querySelectorAll(
+".page"
+)
+);
+
+
+const indicators =
+Array.from(
+document.querySelectorAll(
+".indicator"
+)
+);
+
+
+const pageLabel =
+document.getElementById(
+"pageLabel"
+);
+
+
+const swipeGuide =
+document.getElementById(
+"swipeGuide"
+);
+
+
+const prevButton =
+document.getElementById(
+"prevButton"
+);
+
+
+const nextButton =
+document.getElementById(
+"nextButton"
+);
+
+
+const videoModal =
+document.getElementById(
+"videoModal"
+);
+
+
+const videoFrame =
+document.getElementById(
+"videoFrame"
+);
+
+
+const videoModalClose =
+document.getElementById(
+"videoModalClose"
+);
+
+
+/* =========================================================
+State
+========================================================= */
+
+const pageCount = 5;
+
+let currentPage = 0;
+
+let isAnimating = false;
+
+let guideHidden = false;
+
+
+/* =========================================================
+Mobile detection
+========================================================= */
+
+function isMobile() {
+
+  return window.matchMedia(
+  "(max-width: 768px)"
+).matches;
+
+}
+
+
+/* =========================================================
+Normalize
+========================================================= */
+
+function normalizePage(
+page
+) {
+
+  return (
+  (page % pageCount) +
+  pageCount
+) % pageCount;
+
+}
+
+
+/* =========================================================
+Set front page
+========================================================= */
+
+function setFrontPage(
+index
+) {
+
+  pages.forEach(
+  (page, i) => {
+
+    page.classList.toggle(
+    "is-front",
+    i === index
+  );
+
+  if (i !== index) {
+
+    const scroll =
+    page.querySelector(
+    ".page-scroll"
+  );
+
+
+  if (scroll) {
+
+    scroll.scrollTop = 0;
+
+  }
+
+}
+
+}
+);
+
+}
+
+
+/* =========================================================
+Indicator
+========================================================= */
+
+function updateIndicator() {
+
+  indicators.forEach(
+  (indicator, index) => {
+
+    indicator.classList.toggle(
+    "active",
+    index === currentPage
+  );
+
+}
+);
+
+
+pageLabel.textContent =
+pageNames[currentPage];
+
+}
+
+
+/* =========================================================
+Guide
+========================================================= */
+
+function hideGuide() {
+
+  if (guideHidden) {
+
+    return;
+
+  }
+
+
+  guideHidden = true;
+
+
+  swipeGuide.classList.add(
+  "is-hidden"
+);
+
+}
+
+
+/* =========================================================
+Page transition
+
+PC / Mobile共通
+3Dは使用しない
+========================================================= */
+
+function goToPage(
+targetPage,
+direction
+) {
+
+  if (isAnimating) {
+
+    return;
+
+  }
+
+
+  if (
+  videoModal.classList.contains(
+  "is-open"
+)
+) {
+
+  return;
+
+}
+
+
+targetPage =
+normalizePage(
+targetPage
+);
+
+
+if (
+targetPage === currentPage
+) {
+
+  return;
+
+}
+
+
+hideGuide();
+
+
+const oldPage =
+pages[currentPage];
+
+
+const newPage =
+pages[targetPage];
+
+
+if (
+!oldPage ||
+!newPage
+) {
+
+  return;
+
+}
+
+
+isAnimating = true;
+
+
+/*
+* direction > 0
+* 次ページ → 左へ流れる
+*
+* direction < 0
+* 前ページ → 右へ流れる
+*/
+
+const enterClass =
+direction > 0
+? "page-enter-right"
+: "page-enter-left";
+
+
+const leaveClass =
+direction > 0
+? "page-from-left"
+: "page-from-right";
+
+
+/*
+* 新ページを画面外に配置
+*/
+
+newPage.classList.remove(
+"page-from-left",
+"page-from-right",
+"page-enter-left",
+"page-enter-right",
+"is-front"
+);
+
+
+newPage.classList.add(
+enterClass
+);
+
+
+newPage.style.visibility =
+"visible";
+
+
+newPage.style.zIndex = "4";
+
+
+/*
+* 現在ページを退場
+*/
+
+oldPage.classList.remove(
+"page-from-left",
+"page-from-right"
+);
+
+
+oldPage.classList.add(
+leaveClass
+);
+
+
+oldPage.classList.remove(
+"is-front"
+);
+
+
+oldPage.style.zIndex = "3";
+
+
+/*
+* 強制reflow
+*/
+
+void newPage.offsetWidth;
+
+
+/*
+* 新ページを中央へ
+*/
+
+newPage.classList.remove(
+enterClass
+);
+
+
+newPage.classList.add(
+"is-front"
+);
+
+
+newPage.style.zIndex = "4";
+
+
+currentPage =
+targetPage;
+
+
+updateIndicator();
+
+
+const duration =
+isMobile()
+? 380
+: 680;
+
+
+window.setTimeout(
+() => {
+
+  pages.forEach(
+  (page, index) => {
+
+    if (
+    index === currentPage
+  ) {
+
+    page.classList.remove(
+    "page-from-left",
+    "page-from-right",
+    "page-enter-left",
+    "page-enter-right"
+  );
+
+  page.classList.add(
+  "is-front"
+);
+
+page.style.visibility =
+"visible";
+
+page.style.zIndex =
+"3";
+
+}
+
+else {
+
+  page.classList.remove(
+  "is-front",
+  "page-from-left",
+  "page-from-right",
+  "page-enter-left",
+  "page-enter-right"
+);
+
+page.style.visibility =
+"hidden";
+
+page.style.zIndex =
+"1";
+
+}
+
+}
+);
+
+
+isAnimating = false;
+
+},
+duration
+);
+
+}
+
+
+function nextPage() {
+
+  goToPage(
+  currentPage + 1,
+  1
+);
+
+}
+
+
+function previousPage() {
+
+  goToPage(
+  currentPage - 1,
+  -1
+);
+
+}
+
+
+/* =========================================================
+Navigation buttons
+========================================================= */
+
+nextButton.addEventListener(
+"click",
+event => {
+
+  event.stopPropagation();
+
+  nextPage();
+
+}
+);
+
+
+prevButton.addEventListener(
+"click",
+event => {
+
+  event.stopPropagation();
+
+  previousPage();
+
+}
+);
+
+
+/* =========================================================
+Indicators
+========================================================= */
+
+indicators.forEach(
+(indicator, index) => {
+
+  indicator.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+
+    if (
+    index === currentPage
+  ) {
+
+    return;
+
+  }
+
+
+  let diff =
+  index -
+  currentPage;
+
+
+  if (
+  diff >
+  pageCount / 2
+) {
+
+  diff -= pageCount;
+
+}
+
+
+if (
+diff <
+-pageCount / 2
+) {
+
+  diff += pageCount;
+
+}
+
+
+goToPage(
+index,
+diff > 0
+? 1
+: -1
+);
+
+}
+);
+
+}
+);
+
+
+/* =========================================================
+Keyboard
+========================================================= */
+
+document.addEventListener(
+"keydown",
+event => {
+
+  if (
+  videoModal.classList.contains(
+  "is-open"
+)
+) {
+
+  if (
+  event.key ===
+  "Escape"
+) {
+
+  closeVideoModal();
+
+}
+
+return;
+
+}
+
+
+if (
+event.target.matches(
+"input, textarea, select"
+)
+) {
+
+  return;
+
+}
+
+
+if (
+event.key ===
+"ArrowRight"
+) {
+
+  event.preventDefault();
+
+  nextPage();
+
+}
+
+else if (
+event.key ===
+"ArrowLeft"
+) {
+
+  event.preventDefault();
+
+  previousPage();
+
+}
+
+}
+);
+
+
+/* =========================================================
+Horizontal wheel
+========================================================= */
+
+let wheelLock = false;
+
+
+stage.addEventListener(
+"wheel",
+event => {
+
+  if (
+  videoModal.classList.contains(
+  "is-open"
+)
+) {
+
+  return;
+
+}
+
+
+const absX =
+Math.abs(
+event.deltaX
+);
+
+
+const absY =
+Math.abs(
+event.deltaY
+);
+
+
+if (
+absY >= absX
+) {
+
+  return;
+
+}
+
+
+if (
+absX < 15
+) {
+
+  return;
+
+}
+
+
+event.preventDefault();
+
+
+if (wheelLock) {
+
+  return;
+
+}
+
+
+wheelLock = true;
+
+
+if (
+event.deltaX > 0
+) {
+
+  nextPage();
+
+}
+
+else {
+
+  previousPage();
+
+}
+
+
+window.setTimeout(
+() => {
+
+  wheelLock = false;
+
+},
+700
+);
+
+},
+{
+  passive: false
+}
+);
+
+
+/* =========================================================
+Touch
+========================================================= */
+
+let touchStartX = 0;
+
+let touchStartY = 0;
+
+let touchStartTime = 0;
+
+let touchTracking = false;
+
+
+function isInteractiveElement(
+target
+) {
+
+  return !!target.closest(
+  "button, a, .youtube-card, iframe"
+);
+
+}
+
+
+document
+.querySelectorAll(
+".page-scroll"
+)
+.forEach(
+scrollArea => {
+
+  scrollArea.addEventListener(
+  "touchstart",
+  event => {
+
+    if (
+    videoModal.classList.contains(
+    "is-open"
+  )
+) {
+
+  return;
+
+}
+
+
+const page =
+scrollArea.closest(
+".page"
+);
+
+
+if (
+!page ||
+!page.classList.contains(
+"is-front"
+)
+) {
+
+  touchTracking = false;
+
+  return;
+
+}
+
+
+if (
+isInteractiveElement(
+event.target
+)
+) {
+
+  touchTracking = false;
+
+  return;
+
+}
+
+
+const touch =
+event.touches[0];
+
+
+if (!touch) {
+
+  return;
+
+}
+
+
+touchStartX =
+touch.clientX;
+
+
+touchStartY =
+touch.clientY;
+
+
+touchStartTime =
+performance.now();
+
+
+touchTracking = true;
+
+},
+{
+  passive: true
+}
+);
+
+
+scrollArea.addEventListener(
+"touchmove",
+event => {
+
+  if (!touchTracking) {
+
+    return;
+
+  }
+
+
+  const touch =
+  event.touches[0];
+
+
+  if (!touch) {
+
+    return;
+
+  }
+
+
+  const diffX =
+  touch.clientX -
+  touchStartX;
+
+
+  const diffY =
+  touch.clientY -
+  touchStartY;
+
+
+  if (
+  Math.abs(diffY) >
+  Math.abs(diffX)
+) {
+
+  touchTracking = false;
+
+}
+
+},
+{
+  passive: true
+}
+);
+
+
+scrollArea.addEventListener(
+"touchend",
+event => {
+
+  if (!touchTracking) {
+
+    return;
+
+  }
+
+
+  touchTracking = false;
+
+
+  if (
+  videoModal.classList.contains(
+  "is-open"
+)
+) {
+
+  return;
+
+}
+
+
+const touch =
+event.changedTouches[0];
+
+
+if (!touch) {
+
+  return;
+
+}
+
+
+const diffX =
+touch.clientX -
+touchStartX;
+
+
+const diffY =
+touch.clientY -
+touchStartY;
+
+
+const elapsed =
+performance.now() -
+touchStartTime;
+
+
+if (
+Math.abs(diffY) >=
+Math.abs(diffX)
+) {
+
+  return;
+
+}
+
+
+if (
+Math.abs(diffX) < 55
+) {
+
+  return;
+
+}
+
+
+if (
+elapsed > 1200
+) {
+
+  return;
+
+}
+
+
+hideGuide();
+
+
+if (
+diffX < 0
+) {
+
+  nextPage();
+
+}
+
+else {
+
+  previousPage();
+
+}
+
+},
+{
+  passive: true
+}
+);
+
+}
+);
+
+
+/* =========================================================
+PC Mouse drag
+========================================================= */
+
+let mouseDown = false;
+
+let mouseStartX = 0;
+
+let mouseStartY = 0;
+
+
+stage.addEventListener(
+"mousedown",
+event => {
+
+  if (
+  event.button !== 0
+) {
+
+  return;
+
+}
+
+
+if (
+isInteractiveElement(
+event.target
+)
+) {
+
+  return;
+
+}
+
+
+mouseDown = true;
+
+
+mouseStartX =
+event.clientX;
+
+
+mouseStartY =
+event.clientY;
+
+}
+);
+
+
+window.addEventListener(
+"mouseup",
+event => {
+
+  if (!mouseDown) {
+
+    return;
+
+  }
+
+
+  mouseDown = false;
+
+
+  const diffX =
+  event.clientX -
+  mouseStartX;
+
+
+  const diffY =
+  event.clientY -
+  mouseStartY;
+
+
+  if (
+  Math.abs(diffY) >=
+  Math.abs(diffX)
+) {
+
+  return;
+
+}
+
+
+if (
+Math.abs(diffX) < 60
+) {
+
+  return;
+
+}
+
+
+hideGuide();
+
+
+if (
+diffX < 0
+) {
+
+  nextPage();
+
+}
+
+else {
+
+  previousPage();
+
+}
+
+}
+);
+
+
+window.addEventListener(
+"blur",
+() => {
+
+  mouseDown = false;
+
+}
+);
+
+
+/* =========================================================
+YouTube ID
+========================================================= */
+
+function extractVideoId(
+value
+) {
+
+  if (!value) {
+
+    return "";
+
+  }
+
+
+  if (
+  typeof value ===
+  "object"
+) {
+
+  value =
+  value.videoId ||
+  value.id ||
+  value.url ||
+  value.href ||
+  "";
+
+}
+
+
+const text =
+String(value).trim();
+
+
+const matched =
+text.match(
+/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/
+) ||
+text.match(
+/^([A-Za-z0-9_-]{11})$/
+);
+
+
+return matched
+? matched[1]
+: "";
+
+}
+
+
+/* =========================================================
+Video modal
+========================================================= */
+
+function openVideoModal(
+videoId
+) {
+
+  const id =
+  extractVideoId(
+  videoId
+);
+
+
+if (!id) {
+
+  return;
+
+}
+
+
+videoFrame.src =
+`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+
+
+videoModal.classList.add(
+"is-open"
+);
+
+
+videoModal.setAttribute(
+"aria-hidden",
+"false"
+);
+
+
+document.body.classList.add(
+"modal-open"
+);
+
+}
+
+
+function closeVideoModal() {
+
+  videoModal.classList.remove(
+  "is-open"
+);
+
+
+videoModal.setAttribute(
+"aria-hidden",
+"true"
+);
+
+
+videoFrame.src = "";
+
+
+document.body.classList.remove(
+"modal-open"
+);
+
+}
+
+
+videoModalClose.addEventListener(
+"click",
+event => {
+
+  event.stopPropagation();
+
+  closeVideoModal();
+
+}
+);
+
+
+videoModal.addEventListener(
+"click",
+event => {
+
+  if (
+  event.target ===
+  videoModal
+) {
+
+  closeVideoModal();
+
+}
+
+}
+);
+
+
+/* =========================================================
+YouTube card click
+========================================================= */
+
+document.addEventListener(
+"click",
+event => {
+
+  if (
+  videoModal.classList.contains(
+  "is-open"
+)
+) {
+
+  return;
+
+}
+
+
+const card =
+event.target.closest(
+".youtube-card"
+);
+
+
+if (!card) {
+
+  return;
+
+}
+
+
+/*
+* Mediaカード
+*/
+
+if (
+card.dataset.mediaUrl
+) {
+
+  event.preventDefault();
+
+  event.stopPropagation();
+
+
+  window.open(
+  card.dataset.mediaUrl,
+  "_blank",
+  "noopener,noreferrer"
+);
+
+
+return;
+
+}
+
+
+/*
+* YouTubeカード
+*/
+
+const videoId =
+card.dataset.videoId;
+
+
+if (videoId) {
+
+  event.preventDefault();
+
+  event.stopPropagation();
+
+
+  openVideoModal(
+  videoId
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+Create YouTube card
+========================================================= */
+
+function createYouTubeCard(
+rawData
+) {
+
+  let videoId = "";
+
+  let videoTitle = "";
+
+
+  if (
+  typeof rawData ===
+  "object"
+) {
+
+  videoId =
+  extractVideoId(
+  rawData.videoId ||
+  rawData.id ||
+  rawData.url
+);
+
+
+videoTitle =
+rawData.title ||
+rawData.name ||
+"";
+
+}
+
+else {
+
+  videoId =
+  extractVideoId(
+  rawData
+);
+
+}
+
+
+if (!videoId) {
+
+  return null;
+
+}
+
+
+const card =
+document.createElement(
+"button"
+);
+
+
+card.type = "button";
+
+card.className =
+"youtube-card";
+
+card.dataset.videoId =
+videoId;
+
+
+const thumbnail =
+document.createElement(
+"div"
+);
+
+
+thumbnail.className =
+"youtube-thumbnail";
+
+
+const image =
+document.createElement(
+"img"
+);
+
+
+image.src =
+`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+
+
+image.alt =
+videoTitle ||
+"YouTube動画";
+
+
+image.width = 1280;
+
+image.height = 720;
+
+image.loading =
+"lazy";
+
+image.decoding =
+"async";
+
+
+image.onerror =
+() => {
+
+  if (
+  image.dataset.fallback
+) {
+
+  return;
+
+}
+
+
+image.dataset.fallback =
+"true";
+
+
+image.src =
+`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+};
+
+
+thumbnail.appendChild(
+image
+);
+
+
+const info =
+document.createElement(
+"div"
+);
+
+
+info.className =
+"youtube-info";
+
+
+const title =
+document.createElement(
+"div"
+);
+
+
+title.className =
+"youtube-name";
+
+
+title.textContent =
+videoTitle ||
+"読み込み中…";
+
+
+info.appendChild(
+title
+);
+
+
+card.appendChild(
+thumbnail
+);
+
+
+card.appendChild(
+info
+);
+
+
+if (!videoTitle) {
+
+  fetch(
+  `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`
+)
+.then(
+response => {
+
+  if (!response.ok) {
+
+    throw new Error(
+    "oEmbed error"
+  );
+
+}
+
+return response.json();
+
+}
+)
+.then(
+data => {
+
+  if (
+  data &&
+  data.title
+) {
+
+  title.textContent =
+  data.title;
+
+}
+
+}
+)
+.catch(
+() => {
+
+  title.textContent =
+  "YouTube動画";
+
+}
+);
+
+}
+
+
+return card;
+
+}
+
+
+/* =========================================================
+Create Media card
+
+JSON:
+{
+title,
+horizontal_thumbnail_path,
+episodeURL
+}
+========================================================= */
+
+function createMediaCard(
+item
+) {
+
+  if (
+  !item ||
+  typeof item !== "object"
+) {
+
+  return null;
+
+}
+
+
+const titleText =
+item.title ||
+"";
+
+
+const thumbnailURL =
+item.horizontal_thumbnail_path ||
+"";
+
+
+const episodeURL =
+item.episodeURL ||
+"";
+
+
+if (
+!titleText ||
+!thumbnailURL ||
+!episodeURL
+) {
+
+  return null;
+
+}
+
+
+const card =
+document.createElement(
+"button"
+);
+
+
+card.type = "button";
+
+card.className =
+"youtube-card";
+
+
+/*
+* Media専用URL
+*/
+
+card.dataset.mediaUrl =
+episodeURL;
+
+
+const thumbnail =
+document.createElement(
+"div"
+);
+
+
+thumbnail.className =
+"youtube-thumbnail";
+
+
+const image =
+document.createElement(
+"img"
+);
+
+
+image.src =
+thumbnailURL;
+
+
+image.alt =
+titleText;
+
+
+image.width = 1280;
+
+image.height = 720;
+
+image.loading =
+"lazy";
+
+image.decoding =
+"async";
+
+
+/*
+* TVer等の画像が失敗した場合
+*/
+
+image.onerror =
+() => {
+
+  image.style.display =
+  "none";
+
+  thumbnail.classList.add(
+  "thumbnail-error"
+);
+
+};
+
+
+thumbnail.appendChild(
+image
+);
+
+
+const info =
+document.createElement(
+"div"
+);
+
+
+info.className =
+"youtube-info";
+
+
+const title =
+document.createElement(
+"div"
+);
+
+
+title.className =
+"youtube-name";
+
+
+title.textContent =
+titleText;
+
+
+info.appendChild(
+title
+);
+
+
+card.appendChild(
+thumbnail
+);
+
+
+card.appendChild(
+info
+);
+
+
+return card;
+
+}
+
+
+/* =========================================================
+Category
+========================================================= */
+
+function getCategoryData(
+data,
+category
+) {
+
+  if (!data) {
+
+    return [];
+
+  }
+
+
+  if (
+  Array.isArray(
+  data[category]
+)
+) {
+
+  return data[category];
+
+}
+
+
+if (
+data.YouTube &&
+Array.isArray(
+data.YouTube[category]
+)
+) {
+
+  return data.YouTube[
+  category
+];
+
+}
+
+
+const key =
+Object.keys(data)
+.find(
+key =>
+key.toLowerCase() ===
+category.toLowerCase()
+);
+
+
+if (
+key &&
+Array.isArray(
+data[key]
+)
+) {
+
+  return data[key];
+
+}
+
+
+return [];
+
+}
+
+
+/* =========================================================
+Load YouTube JSON
+========================================================= */
+
+async function loadYouTubeData() {
+
+  try {
+
+    const response =
+    await fetch(
+    "./YouTube.json",
+    {
+      cache: "no-cache"
+    }
+  );
+
+
+  if (!response.ok) {
+
+    throw new Error(
+    `HTTP ${response.status}`
+  );
+
+}
+
+
+const youtubeData =
+await response.json();
+
+
+Object.entries(
+categoryContainers
+).forEach(
+([category, containerId]) => {
+
+  const container =
+  document.getElementById(
+  containerId
+);
+
+
+if (!container) {
+
+  return;
+
+}
+
+
+const ids =
+getCategoryData(
+youtubeData,
+category
+);
+
+
+container.innerHTML = "";
+
+
+if (!ids.length) {
+
+  const empty =
+  document.createElement(
+  "div"
+);
+
+
+empty.className =
+"youtube-error";
+
+
+empty.textContent =
+"動画がありません。";
+
+
+container.appendChild(
+empty
+);
+
+
+return;
+
+}
+
+
+const fragment =
+document.createDocumentFragment();
+
+
+ids.forEach(
+rawData => {
+
+  const card =
+  createYouTubeCard(
+  rawData
+);
+
+
+if (card) {
+
+  fragment.appendChild(
+  card
+);
+
+}
+
+}
+);
+
+
+container.appendChild(
+fragment
+);
+
+}
+);
+
+
+youtubeMediaItems =
+getCategoryData(
+youtubeData,
+"Media"
+);
+
+youtubeMediaReady = true;
+
+renderMediaPage();
+
+}
+
+catch (error) {
+
+  console.error(
+  "YouTube.jsonの読み込みに失敗しました:",
+  error
+);
+
+
+Object.values(
+categoryContainers
+).forEach(
+containerId => {
+
+  const container =
+  document.getElementById(
+  containerId
+);
+
+
+if (!container) {
+
+  return;
+
+}
+
+
+container.innerHTML = "";
+
+
+const errorElement =
+document.createElement(
+"div"
+);
+
+
+errorElement.className =
+"youtube-error";
+
+
+errorElement.textContent =
+"動画情報を読み込めませんでした。";
+
+
+container.appendChild(
+errorElement
+);
+
+}
+);
+
+
+youtubeMediaItems = [];
+
+youtubeMediaReady = true;
+
+renderMediaPage();
+
+}
+
+}
+
+
+/* =========================================================
+Load Media API
+---------------------------------------------------------
+高速化仕様
+
+・起動時には取得しない
+・localStorageキャッシュを使用
+・キャッシュがあれば即表示
+・古いキャッシュはバックグラウンド更新
+・GASへのアクセス回数を大幅削減
+========================================================= */
+
+const MEDIA_CACHE_KEY =
+"konnagi_media_cache_v1";
+
+const MEDIA_CACHE_TIME =
+"konnagi_media_cache_time_v1";
+
+/*
+* キャッシュ有効時間
+* 10分
+*/
+const MEDIA_CACHE_TTL =
+10 * 60 * 1000;
+
+
+/* ---------------------------------------------------------
+Mediaデータを表示
+--------------------------------------------------------- */
+
+let apiMediaItems = [];
+
+let youtubeMediaItems = [];
+
+let apiMediaReady = false;
+
+let youtubeMediaReady = false;
+
+
+function appendMediaDivider(
+fragment,
+label
+) {
+
+  const divider =
+  document.createElement(
+  "div"
+);
+
+divider.className =
+"media-divider";
+
+divider.textContent =
+label;
+
+fragment.appendChild(
+divider
+);
+
+}
+
+
+/*
+* Mediaページ
+* 上: MEDIA_API_URL（別タブ）
+* 下: YouTube.json の Media（iframe）
+*/
+
+function renderMediaPage() {
+
+  const container =
+  document.getElementById(
+  "mediaGrid"
+);
+
+if (!container) {
+  return;
+}
+
+
+if (
+!apiMediaReady &&
+!youtubeMediaReady
+) {
+
+  return;
+
+}
+
+
+container.innerHTML = "";
+
+
+const fragment =
+document.createDocumentFragment();
+
+const apiFragment =
+document.createDocumentFragment();
+
+const youtubeFragment =
+document.createDocumentFragment();
+
+let apiCount = 0;
+
+let youtubeCount = 0;
+
+
+if (
+Array.isArray(apiMediaItems)
+) {
+
+  apiMediaItems.forEach(
+  item => {
+
+    const card =
+    createMediaCard(
+    item
+  );
+
+  if (card) {
+
+    apiFragment.appendChild(
+    card
+  );
+
+  apiCount += 1;
+
+  }
+
+}
+);
+
+}
+
+
+if (
+Array.isArray(youtubeMediaItems)
+) {
+
+  youtubeMediaItems.forEach(
+  rawData => {
+
+    const card =
+    createYouTubeCard(
+    rawData
+  );
+
+  if (card) {
+
+    youtubeFragment.appendChild(
+    card
+  );
+
+  youtubeCount += 1;
+
+  }
+
+}
+);
+
+}
+
+
+if (apiCount) {
+
+  if (youtubeCount) {
+
+    appendMediaDivider(
+    fragment,
+    "Media"
+  );
+
+  }
+
+  fragment.appendChild(
+  apiFragment
+);
+
+}
+
+
+if (youtubeCount) {
+
+  if (apiCount) {
+
+    appendMediaDivider(
+    fragment,
+    "YouTube"
+  );
+
+  }
+
+  fragment.appendChild(
+  youtubeFragment
+);
+
+}
+
+
+
+
+
+if (
+!apiCount &&
+!youtubeCount
+) {
+
+  const empty =
+  document.createElement(
+  "div"
+);
+
+empty.className =
+"youtube-error";
+
+empty.textContent =
+apiMediaReady && youtubeMediaReady
+? "メディア情報がありません。"
+: "読み込み中…";
+
+if (
+!(apiMediaReady && youtubeMediaReady)
+) {
+
+  empty.className =
+  "youtube-loading";
+
+}
+
+
+container.appendChild(
+empty
+);
+
+return;
+
+}
+
+
+container.appendChild(
+fragment
+);
+
+}
+
+
+/* ---------------------------------------------------------
+APIレスポンスから配列を取得
+--------------------------------------------------------- */
+
+function normalizeMediaData(
+mediaData
+) {
+
+  if (
+  Array.isArray(
+  mediaData
+)
+) {
+
+  return mediaData;
+
+}
+
+
+if (
+mediaData &&
+typeof mediaData === "object"
+) {
+
+  if (
+  Array.isArray(
+  mediaData.data
+)
+) {
+
+  return mediaData.data;
+
+}
+
+
+if (
+Array.isArray(
+mediaData.items
+)
+) {
+
+  return mediaData.items;
+
+}
+
+
+if (
+Array.isArray(
+mediaData.Media
+)
+) {
+
+  return mediaData.Media;
+
+}
+
+}
+
+
+return [];
+
+}
+
+
+/* ---------------------------------------------------------
+localStorageからキャッシュ取得
+--------------------------------------------------------- */
+
+function getMediaCache() {
+
+  try {
+
+    const raw =
+    localStorage.getItem(
+    MEDIA_CACHE_KEY
+  );
+
+  if (!raw) {
+    return null;
+  }
+
+
+  const items =
+  JSON.parse(raw);
+
+
+  if (
+  !Array.isArray(items)
+) {
+
+  return null;
+
+}
+
+
+return items;
+
+}
+catch (error) {
+
+  console.warn(
+  "Mediaキャッシュ読み込み失敗:",
+  error
+);
+
+return null;
+
+}
+
+}
+
+
+/* ---------------------------------------------------------
+localStorageへ保存
+--------------------------------------------------------- */
+
+function saveMediaCache(
+items
+) {
+
+  try {
+
+    localStorage.setItem(
+    MEDIA_CACHE_KEY,
+    JSON.stringify(items)
+  );
+
+
+  localStorage.setItem(
+  MEDIA_CACHE_TIME,
+  String(
+  Date.now()
+)
+);
+
+}
+catch (error) {
+
+  console.warn(
+  "Mediaキャッシュ保存失敗:",
+  error
+);
+
+}
+
+}
+
+
+/* ---------------------------------------------------------
+キャッシュが新しいか
+--------------------------------------------------------- */
+
+function isMediaCacheFresh() {
+
+  try {
+
+    const time =
+    Number(
+    localStorage.getItem(
+    MEDIA_CACHE_TIME
+  )
+);
+
+
+if (!time) {
+  return false;
+}
+
+
+return (
+Date.now() - time <
+MEDIA_CACHE_TTL
+);
+
+}
+catch (error) {
+
+  return false;
+
+}
+
+}
+
+
+/* ---------------------------------------------------------
+GASからMediaを取得
+--------------------------------------------------------- */
+
+async function fetchMediaFromAPI() {
+
+  const response =
+  await fetch(
+  MEDIA_API_URL,
+  {
+    method: "GET",
+
+    /*
+    * no-cacheではなくdefault
+    *
+    * ブラウザ/CDN側のキャッシュ利用を
+    * 妨げない
+    */
+    cache: "default"
+  }
+);
+
+
+if (!response.ok) {
+
+  throw new Error(
+  `HTTP ${response.status}`
+);
+
+}
+
+
+const mediaData =
+await response.json();
+
+
+return normalizeMediaData(
+mediaData
+);
+
+}
+
+
+/* ---------------------------------------------------------
+Media読み込み
+--------------------------------------------------------- */
+
+async function loadMediaData(
+forceRefresh = false
+) {
+
+  const container =
+  document.getElementById(
+  "mediaGrid"
+);
+
+
+if (!container) {
+  return;
+}
+
+
+/*
+* -------------------------------------------------------
+* ① キャッシュを即表示
+* -------------------------------------------------------
+*/
+
+const cachedItems =
+getMediaCache();
+
+
+if (
+cachedItems &&
+cachedItems.length
+) {
+
+  apiMediaItems =
+  cachedItems;
+
+  apiMediaReady = true;
+
+  renderMediaPage();
+
+/*
+* キャッシュが新しいなら
+* GASにはアクセスしない
+*/
+
+if (
+!forceRefresh &&
+isMediaCacheFresh()
+) {
+
+  return;
+
+}
+
+}
+
+
+/*
+* -------------------------------------------------------
+* ② キャッシュがない場合のみ
+*    読み込み表示
+* -------------------------------------------------------
+*/
+
+if (
+!cachedItems ||
+!cachedItems.length
+) {
+
+  container.innerHTML = "";
+
+
+  const loading =
+  document.createElement(
+  "div"
+);
+
+loading.className =
+"youtube-loading";
+
+loading.textContent =
+"読み込み中…";
+
+container.appendChild(
+loading
+);
+
+}
+
+
+/*
+* -------------------------------------------------------
+* ③ GASから更新
+* -------------------------------------------------------
+*/
+
+try {
+
+  const items =
+  await fetchMediaFromAPI();
+
+
+  /*
+  * 最新データを保存
+  */
+
+  saveMediaCache(
+  items
+);
+
+
+/*
+* 表示更新
+* APIを上、YouTube.jsonを下
+*/
+
+apiMediaItems = items;
+
+apiMediaReady = true;
+
+renderMediaPage();
+
+}
+catch (error) {
+
+  console.error(
+  "Media APIの読み込みに失敗しました:",
+  error
+);
+
+
+/*
+* キャッシュが存在するなら
+* キャッシュ表示を維持
+*/
+
+if (
+cachedItems &&
+cachedItems.length
+) {
+
+  apiMediaItems =
+  cachedItems;
+
+  apiMediaReady = true;
+
+  renderMediaPage();
+
+  return;
+
+}
+
+
+apiMediaItems = [];
+
+apiMediaReady = true;
+
+renderMediaPage();
+
+}
+
+}
+
+/* =========================================================
+Visibility
+========================================================= */
+
+document.addEventListener(
+"visibilitychange",
+() => {
+
+  if (
+  document.hidden
+) {
+
+  mouseDown = false;
+
+  touchTracking = false;
+
+}
+
+}
+);
+
+
+/* =========================================================
+Initialize
+========================================================= */
+
+pages.forEach(
+(page, index) => {
+
+  if (index === currentPage) {
+
+    page.classList.add(
+    "is-front"
+  );
+
+  page.style.visibility =
+  "visible";
+
+  page.style.zIndex =
+  "3";
+
+}
+
+else {
+
+  page.classList.remove(
+  "is-front"
+);
+
+page.style.visibility =
+"hidden";
+
+page.style.zIndex =
+"1";
+
+}
+
+}
+);
+
+
+updateIndicator();
+
+
+/*
+* YouTubeとMediaを並行読み込み
+*/
+
+loadYouTubeData();
+
+loadMediaData();
+
+</script>
+
+</body>
+</html>
