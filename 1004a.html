@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#f6b6cf">
+
+  <title>サクラミーツ応援アプリ</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, #fff8fb 0%, transparent 35%),
+        linear-gradient(135deg, #fff4f8 0%, #fdf7fa 50%, #fff 100%);
+      color: #333;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        "Yu Gothic",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+    }
+
+    /* =========================================================
+       Header
+    ========================================================= */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        20px
+        16px;
+
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      border-bottom: 1px solid rgba(232, 106, 154, 0.12);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .app-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #d95b8c;
+    }
+
+    .app-subtitle {
+      margin: 5px 0 0;
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 0.08em;
+    }
+
+    /* =========================================================
+       Main
+    ========================================================= */
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .status {
+      margin: 4px 0 18px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .loading {
+      padding: 50px 20px;
+      text-align: center;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .error {
+      padding: 30px 20px;
+      text-align: center;
+      color: #d95b8c;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 18px;
+    }
+
+    /* =========================================================
+       Episode list
+    ========================================================= */
+
+    .episode-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .episode {
+      display: flex;
+      align-items: stretch;
+
+      width: 100%;
+      min-height: 96px;
+
+      overflow: hidden;
+
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(232, 106, 154, 0.10);
+      border-radius: 16px;
+
+      text-decoration: none;
+      color: inherit;
+
+      box-shadow:
+        0 4px 16px rgba(80, 40, 60, 0.05);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .episode:active {
+      transform: scale(0.985);
+    }
+
+    .thumbnail {
+      flex: 0 0 140px;
+      width: 140px;
+      aspect-ratio: 16 / 9;
+      align-self: center;
+
+      object-fit: cover;
+
+      background: #f4edf0;
+    }
+
+    .episode-content {
+      flex: 1;
+      min-width: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 12px 14px;
+    }
+
+    .episode-title {
+      margin: 0;
+
+      font-size: 14px;
+      line-height: 1.65;
+      font-weight: 700;
+
+      color: #3c3c3c;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
+
+    .episode-arrow {
+      margin-top: 7px;
+      font-size: 11px;
+      color: #d95b8c;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       PC
+    ========================================================= */
+
+    @media (min-width: 768px) {
+
+      .header {
+        padding-top: 22px;
+        padding-bottom: 20px;
+      }
+
+      .app-title {
+        font-size: 28px;
+      }
+
+      .app-subtitle {
+        font-size: 13px;
+      }
+
+      main {
+        padding:
+          32px
+          24px
+          60px;
+      }
+
+      .status {
+        margin-bottom: 24px;
+      }
+
+      .episode-list {
+        grid-template-columns:
+          repeat(auto-fill, minmax(340px, 1fr));
+
+        gap: 20px;
+      }
+
+      .episode {
+        display: block;
+
+        min-height: 0;
+
+        border-radius: 20px;
+
+        box-shadow:
+          0 8px 30px rgba(80, 40, 60, 0.07);
+      }
+
+      .episode:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+          0 14px 36px rgba(80, 40, 60, 0.12);
+      }
+
+      .thumbnail {
+        display: block;
+
+        width: 100%;
+        aspect-ratio: 16 / 9;
+
+        border-radius: 0;
+      }
+
+      .episode-content {
+        min-height: 120px;
+        padding: 17px 18px 18px;
+      }
+
+      .episode-title {
+        font-size: 15px;
+        line-height: 1.65;
+        -webkit-line-clamp: 3;
+      }
+
+      .episode-arrow {
+        margin-top: 10px;
+      }
+    }
+
+    /* =========================================================
+       Large PC
+    ========================================================= */
+
+    @media (min-width: 1100px) {
+      .episode-list {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* =========================================================
+       Small Mobile
+    ========================================================= */
+
+    @media (max-width: 390px) {
+      main {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .episode {
+        min-height: 88px;
+      }
+
+      .thumbnail {
+        flex-basis: 120px;
+        width: 120px;
+      }
+
+      .episode-content {
+        padding: 10px 11px;
+      }
+
+      .episode-title {
+        font-size: 13px;
+        line-height: 1.55;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="app-title">サクラミーツ応援アプリ</h1>
+      <p class="app-subtitle">櫻坂46「サクラミーツ」最新エピソード</p>
+    </div>
+  </header>
+
+  <main>
+    <div id="status" class="status">
+      最新エピソードを読み込んでいます…
+    </div>
+
+    <div id="episodeList" class="episode-list">
+      <div class="loading">
+        Loading...
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ============================================================
+    // API
+    // ============================================================
+
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbznv32Rdh9CUDvnHqUvo6kL5gdhKen8K38grLs8CcJynAiC53IHBYEHp_MQnXirBk-oQw/exec";
+
+
+    // ============================================================
+    // DOM
+    // ============================================================
+
+    const episodeList =
+      document.getElementById("episodeList");
+
+    const status =
+      document.getElementById("status");
+
+
+    // ============================================================
+    // エピソード取得
+    // ============================================================
+
+    async function loadEpisodes() {
+
+      try {
+
+        const response = await fetch(API_URL, {
+          method: "GET",
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error(
+            "APIのレスポンス形式が正しくありません"
+          );
+        }
+
+        renderEpisodes(data);
+
+      } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "エピソードを読み込めませんでした。";
+
+        episodeList.innerHTML = `
+          <div class="error">
+            エピソード情報を取得できませんでした。
+          </div>
+        `;
+      }
+    }
+
+
+    // ============================================================
+    // 表示
+    // ============================================================
+
+    function renderEpisodes(episodes) {
+
+      episodeList.innerHTML = "";
+
+      if (episodes.length === 0) {
+
+        status.textContent =
+          "エピソードがありません。";
+
+        episodeList.innerHTML = `
+          <div class="error">
+            現在表示できるエピソードがありません。
+          </div>
+        `;
+
+        return;
+      }
+
+
+      status.textContent =
+        `${episodes.length}件のエピソード`;
+
+
+      episodes.forEach((episode) => {
+
+        const title =
+          episode.title || "タイトルなし";
+
+        const thumbnail =
+          episode.horizontal_thumbnail_path || "";
+
+        const episodeURL =
+          episode.episodeURL || "#";
+
+
+        const link =
+          document.createElement("a");
+
+        link.className = "episode";
+
+        link.href = episodeURL;
+
+        // TVerを別タブで開く
+        link.target = "_blank";
+
+        // セキュリティ対策
+        link.rel = "noopener noreferrer";
+
+
+        link.innerHTML = `
+
+          <img
+            class="thumbnail"
+            src="${escapeHTML(thumbnail)}"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          >
+
+          <div class="episode-content">
+
+            <h2 class="episode-title">
+              ${escapeHTML(title)}
+            </h2>
+
+            <div class="episode-arrow">
+              TVerで見る ↗
+            </div>
+
+          </div>
+
+        `;
+
+
+        episodeList.appendChild(link);
+
+      });
+    }
+
+
+    // ============================================================
+    // HTMLエスケープ
+    // ============================================================
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    // ============================================================
+    // 起動
+    // ============================================================
+
+    loadEpisodes();
+
+  </script>
+
+</body>
+</html>
