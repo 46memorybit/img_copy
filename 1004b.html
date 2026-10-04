@@ -184,7 +184,7 @@
       overflow: hidden;
     }
 
-    .episode-arrow {
+    .episode-link {
       margin-top: 7px;
       font-size: 11px;
       color: #d95b8c;
@@ -266,7 +266,7 @@
         -webkit-line-clamp: 3;
       }
 
-      .episode-arrow {
+      .episode-link {
         margin-top: 10px;
       }
     }
@@ -287,6 +287,7 @@
     ========================================================= */
 
     @media (max-width: 390px) {
+
       main {
         padding-left: 10px;
         padding-right: 10px;
@@ -318,23 +319,33 @@
   <header class="header">
     <div class="header-inner">
       <h1 class="app-title">サクラミーツ応援アプリ</h1>
-      <p class="app-subtitle">櫻坂46「サクラミーツ」最新エピソード</p>
+
+      <p class="app-subtitle">
+        櫻坂46「サクラミーツ」最新エピソード
+      </p>
     </div>
   </header>
 
+
   <main>
+
     <div id="status" class="status">
       最新エピソードを読み込んでいます…
     </div>
 
     <div id="episodeList" class="episode-list">
+
       <div class="loading">
         Loading...
       </div>
+
     </div>
+
   </main>
 
+
   <script>
+
     // ============================================================
     // API
     // ============================================================
@@ -355,6 +366,48 @@
 
 
     // ============================================================
+    // episodeURLから表示メッセージを判定
+    // ============================================================
+
+    function getLinkMessage(url) {
+
+      try {
+
+        const hostname =
+          new URL(url).hostname.toLowerCase();
+
+
+        // TVer
+        if (
+          hostname === "tver.jp" ||
+          hostname.endsWith(".tver.jp")
+        ) {
+          return "TVerで見る ↗";
+        }
+
+
+        // radiko
+        if (
+          hostname === "radiko.jp" ||
+          hostname.endsWith(".radiko.jp")
+        ) {
+          return "radikoで聴く ↗";
+        }
+
+
+        // その他
+        return "";
+
+      } catch (error) {
+
+        return "";
+
+      }
+
+    }
+
+
+    // ============================================================
     // エピソード取得
     // ============================================================
 
@@ -362,24 +415,34 @@
 
       try {
 
-        const response = await fetch(API_URL, {
-          method: "GET",
-          cache: "no-store"
-        });
+        const response =
+          await fetch(API_URL, {
+            method: "GET",
+            cache: "no-store"
+          });
+
 
         if (!response.ok) {
+
           throw new Error(
             `HTTP ${response.status}`
           );
+
         }
 
-        const data = await response.json();
+
+        const data =
+          await response.json();
+
 
         if (!Array.isArray(data)) {
+
           throw new Error(
             "APIのレスポンス形式が正しくありません"
           );
+
         }
+
 
         renderEpisodes(data);
 
@@ -390,12 +453,15 @@
         status.textContent =
           "エピソードを読み込めませんでした。";
 
+
         episodeList.innerHTML = `
           <div class="error">
             エピソード情報を取得できませんでした。
           </div>
         `;
+
       }
+
     }
 
 
@@ -407,10 +473,12 @@
 
       episodeList.innerHTML = "";
 
+
       if (episodes.length === 0) {
 
         status.textContent =
           "エピソードがありません。";
+
 
         episodeList.innerHTML = `
           <div class="error">
@@ -419,6 +487,7 @@
         `;
 
         return;
+
       }
 
 
@@ -431,25 +500,50 @@
         const title =
           episode.title || "タイトルなし";
 
+
         const thumbnail =
           episode.horizontal_thumbnail_path || "";
+
 
         const episodeURL =
           episode.episodeURL || "#";
 
 
+        // URLに応じてメッセージを取得
+        const linkMessage =
+          getLinkMessage(episodeURL);
+
+
         const link =
           document.createElement("a");
 
-        link.className = "episode";
 
-        link.href = episodeURL;
+        link.className =
+          "episode";
 
-        // TVerを別タブで開く
-        link.target = "_blank";
 
-        // セキュリティ対策
-        link.rel = "noopener noreferrer";
+        link.href =
+          episodeURL;
+
+
+        // 別タブで開く
+        link.target =
+          "_blank";
+
+
+        link.rel =
+          "noopener noreferrer";
+
+
+        // メッセージがある場合のみ表示
+        const messageHTML =
+          linkMessage
+            ? `
+              <div class="episode-link">
+                ${linkMessage}
+              </div>
+            `
+            : "";
 
 
         link.innerHTML = `
@@ -468,9 +562,7 @@
               ${escapeHTML(title)}
             </h2>
 
-            <div class="episode-arrow">
-              TVerで見る ↗
-            </div>
+            ${messageHTML}
 
           </div>
 
@@ -480,6 +572,7 @@
         episodeList.appendChild(link);
 
       });
+
     }
 
 
