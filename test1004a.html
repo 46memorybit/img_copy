@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#f6b6cf"
+  >
+
+  <meta
+    name="description"
+    content="サクラミーツとミーツメンバーの出演番組をまとめた応援アプリ"
+  >
+
+  <meta
+    name="mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="サクラミーツ"
+  >
+
+  <link
+    rel="manifest"
+    href="./manifest.webmanifest"
+  >
+
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="./icon-192.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="./icon-192.png"
+  >
+
+  <title>サクラミーツ応援アプリ</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+      margin: 0;
+
+      background:
+        radial-gradient(
+          circle at top left,
+          #fff8fb 0%,
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #fff4f8 0%,
+          #fdf7fa 50%,
+          #fff 100%
+        );
+
+      color: #333;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans JP",
+        "Yu Gothic",
+        "Hiragino Kaku Gothic ProN",
+        sans-serif;
+
+      /*
+       * ボトムナビゲーション分の余白
+       */
+      padding-bottom:
+        calc(78px + env(safe-area-inset-bottom));
+    }
+
+
+    /* =========================================================
+       Header
+    ========================================================= */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        20px
+        16px;
+
+      background: rgba(255, 255, 255, 0.82);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      border-bottom:
+        1px solid rgba(232, 106, 154, 0.12);
+    }
+
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+
+    .app-title {
+      margin: 0;
+
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+
+      color: #d95b8c;
+    }
+
+
+    .app-subtitle {
+      margin: 5px 0 0;
+
+      font-size: 12px;
+      color: #999;
+
+      letter-spacing: 0.08em;
+    }
+
+
+    /* =========================================================
+       Main
+    ========================================================= */
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+
+      margin: 0 auto;
+
+      padding:
+        20px
+        16px
+        40px;
+    }
+
+
+    .status {
+      margin: 4px 0 18px;
+
+      font-size: 13px;
+      color: #999;
+    }
+
+
+    .loading {
+      padding: 50px 20px;
+
+      text-align: center;
+
+      color: #aaa;
+      font-size: 14px;
+    }
+
+
+    .error {
+      padding: 30px 20px;
+
+      text-align: center;
+
+      color: #d95b8c;
+
+      background:
+        rgba(255, 255, 255, 0.7);
+
+      border-radius: 18px;
+    }
+
+
+    /* =========================================================
+       Episode list
+    ========================================================= */
+
+    .episode-list {
+      display: grid;
+      gap: 12px;
+    }
+
+
+    .episode {
+      display: flex;
+      align-items: stretch;
+
+      width: 100%;
+      min-height: 96px;
+
+      overflow: hidden;
+
+      background:
+        rgba(255, 255, 255, 0.9);
+
+      border:
+        1px solid rgba(232, 106, 154, 0.10);
+
+      border-radius: 16px;
+
+      text-decoration: none;
+      color: inherit;
+
+      box-shadow:
+        0 4px 16px rgba(80, 40, 60, 0.05);
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+
+    .episode:active {
+      transform: scale(0.985);
+    }
+
+
+    .thumbnail {
+      flex: 0 0 140px;
+
+      width: 140px;
+
+      aspect-ratio: 16 / 9;
+
+      align-self: center;
+
+      object-fit: cover;
+
+      background: #f4edf0;
+    }
+
+
+    .episode-content {
+      flex: 1;
+      min-width: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 12px 14px;
+    }
+
+
+    .episode-title {
+      margin: 0;
+
+      font-size: 14px;
+      line-height: 1.65;
+
+      font-weight: 700;
+
+      color: #3c3c3c;
+
+      display: -webkit-box;
+
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+
+      overflow: hidden;
+    }
+
+
+    .episode-link {
+      margin-top: 7px;
+
+      font-size: 11px;
+
+      color: #d95b8c;
+
+      font-weight: 700;
+    }
+
+
+    /* =========================================================
+       Bottom Navigation
+    ========================================================= */
+
+    .bottom-nav {
+      position: fixed;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      z-index: 200;
+
+      padding:
+        8px
+        16px
+        calc(8px + env(safe-area-inset-bottom));
+
+      background:
+        rgba(255, 255, 255, 0.90);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      border-top:
+        1px solid rgba(232, 106, 154, 0.12);
+
+      box-shadow:
+        0 -4px 20px rgba(80, 40, 60, 0.06);
+    }
+
+
+    .bottom-nav-inner {
+      width: 100%;
+      max-width: 420px;
+
+      margin: 0 auto;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 8px;
+    }
+
+
+    .bottom-nav-item {
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      min-height: 56px;
+
+      border: 0;
+
+      border-radius: 16px;
+
+      background: transparent;
+
+      color: #999;
+
+      font-family: inherit;
+
+      font-size: 11px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+    }
+
+
+    .bottom-nav-item:active {
+      transform: scale(0.96);
+    }
+
+
+    .bottom-nav-item.active {
+      color: #d95b8c;
+
+      background:
+        rgba(232, 106, 154, 0.08);
+    }
+
+
+    .bottom-nav-icon {
+      width: 23px;
+      height: 23px;
+
+      margin-bottom: 3px;
+
+      fill: none;
+
+      stroke: currentColor;
+
+      stroke-width: 2;
+
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+
+    /* =========================================================
+       Settings Page
+    ========================================================= */
+
+    .settings-page {
+      display: none;
+    }
+
+
+    .settings-page.active {
+      display: block;
+    }
+
+
+    .home-page.active {
+      display: block;
+    }
+
+
+    .settings-title {
+      margin: 4px 0 20px;
+
+      font-size: 22px;
+
+      font-weight: 800;
+
+      color: #d95b8c;
+    }
+
+
+    .settings-card {
+      overflow: hidden;
+
+      background:
+        rgba(255, 255, 255, 0.9);
+
+      border:
+        1px solid rgba(232, 106, 154, 0.10);
+
+      border-radius: 18px;
+
+      box-shadow:
+        0 4px 16px rgba(80, 40, 60, 0.05);
+    }
+
+
+    .settings-item {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      min-height: 64px;
+
+      padding:
+        14px
+        18px;
+
+      border-bottom:
+        1px solid rgba(232, 106, 154, 0.08);
+    }
+
+
+    .settings-item:last-child {
+      border-bottom: 0;
+    }
+
+
+    .settings-item-title {
+      margin: 0;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      color: #444;
+    }
+
+
+    .settings-item-description {
+      margin: 4px 0 0;
+
+      font-size: 11px;
+
+      color: #999;
+    }
+
+
+    .settings-version {
+      margin-top: 24px;
+
+      text-align: center;
+
+      font-size: 11px;
+
+      color: #aaa;
+    }
+
+
+    /* =========================================================
+       PC
+    ========================================================= */
+
+    @media (min-width: 768px) {
+
+      .header {
+        padding-top: 22px;
+        padding-bottom: 20px;
+      }
+
+
+      .app-title {
+        font-size: 28px;
+      }
+
+
+      .app-subtitle {
+        font-size: 13px;
+      }
+
+
+      main {
+        padding:
+          32px
+          24px
+          60px;
+      }
+
+
+      .episode-list {
+        grid-template-columns:
+          repeat(
+            auto-fill,
+            minmax(340px, 1fr)
+          );
+
+        gap: 20px;
+      }
+
+
+      .episode {
+        display: block;
+
+        min-height: 0;
+
+        border-radius: 20px;
+
+        box-shadow:
+          0 8px 30px rgba(80, 40, 60, 0.07);
+      }
+
+
+      .episode:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+          0 14px 36px rgba(80, 40, 60, 0.12);
+      }
+
+
+      .thumbnail {
+        display: block;
+
+        width: 100%;
+
+        aspect-ratio: 16 / 9;
+
+        border-radius: 0;
+      }
+
+
+      .episode-content {
+        min-height: 120px;
+
+        padding:
+          17px
+          18px
+          18px;
+      }
+
+
+      .episode-title {
+        font-size: 15px;
+        line-height: 1.65;
+
+        -webkit-line-clamp: 3;
+      }
+
+
+      .episode-link {
+        margin-top: 10px;
+      }
+
+
+      .bottom-nav {
+        padding:
+          10px
+          20px
+          calc(10px + env(safe-area-inset-bottom));
+      }
+
+
+      .bottom-nav-inner {
+        max-width: 360px;
+      }
+
+    }
+
+
+    /* =========================================================
+       Large PC
+    ========================================================= */
+
+    @media (min-width: 1100px) {
+
+      .episode-list {
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(0, 1fr)
+          );
+      }
+
+    }
+
+
+    /* =========================================================
+       Small Mobile
+    ========================================================= */
+
+    @media (max-width: 390px) {
+
+      main {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+
+      .episode {
+        min-height: 88px;
+      }
+
+
+      .thumbnail {
+        flex-basis: 120px;
+
+        width: 120px;
+      }
+
+
+      .episode-content {
+        padding:
+          10px
+          11px;
+      }
+
+
+      .episode-title {
+        font-size: 13px;
+
+        line-height: 1.55;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================================================
+       Header
+  ========================================================= -->
+
+  <header class="header">
+
+    <div class="header-inner">
+
+      <h1 class="app-title">
+        サクラミーツ応援アプリ
+      </h1>
+
+      <p class="app-subtitle">
+        サクラミーツとミーツメンバーの出演番組
+      </p>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================================
+       Home
+  ========================================================= -->
+
+  <main
+    id="homePage"
+    class="home-page active"
+  >
+
+    <div
+      id="status"
+      class="status"
+    >
+      最新エピソードを読み込んでいます…
+    </div>
+
+
+    <div
+      id="episodeList"
+      class="episode-list"
+    >
+
+      <div class="loading">
+        Loading...
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       Settings
+  ========================================================= -->
+
+  <main
+    id="settingsPage"
+    class="settings-page"
+  >
+
+    <h2 class="settings-title">
+      設定
+    </h2>
+
+
+    <div class="settings-card">
+
+      <div class="settings-item">
+
+        <div>
+
+          <p class="settings-item-title">
+            アプリについて
+          </p>
+
+          <p class="settings-item-description">
+            サクラミーツ応援アプリ
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-item">
+
+        <div>
+
+          <p class="settings-item-title">
+            通知
+          </p>
+
+          <p class="settings-item-description">
+            通知機能は今後対応予定です
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="settings-version">
+      サクラミーツ応援アプリ
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       Bottom Navigation
+  ========================================================= -->
+
+  <nav
+    class="bottom-nav"
+    aria-label="メインナビゲーション"
+  >
+
+    <div class="bottom-nav-inner">
+
+
+      <!-- ホーム -->
+
+      <button
+        class="bottom-nav-item active"
+        type="button"
+        data-page="home"
+        aria-label="ホーム"
+        aria-current="page"
+      >
+
+        <svg
+          class="bottom-nav-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+
+          <path
+            d="M3 10.5L12 3l9 7.5"
+          />
+
+          <path
+            d="M5.5 9.5V21h13V9.5"
+          />
+
+          <path
+            d="M9.5 21v-6h5v6"
+          />
+
+        </svg>
+
+
+        <span>
+          ホーム
+        </span>
+
+      </button>
+
+
+      <!-- 設定 -->
+
+      <button
+        class="bottom-nav-item"
+        type="button"
+        data-page="settings"
+        aria-label="設定"
+      >
+
+        <svg
+          class="bottom-nav-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+
+          <circle
+            cx="12"
+            cy="12"
+            r="3"
+          />
+
+
+          <path
+            d="
+              M19.4 15
+              a1.7 1.7 0 0 0
+              .34 1.88
+              l.06.06
+              -1.42 1.42
+              -.06-.06
+              a1.7 1.7 0 0 0
+              -1.88-.34
+              1.7 1.7 0 0 0
+              -1.03 1.56
+              V20
+              h-2
+              v-.48
+              a1.7 1.7 0 0 0
+              -1.03-1.56
+              1.7 1.7 0 0 0
+              -1.88.34
+              l-.06.06
+              -1.42-1.42
+              .06-.06
+              A1.7 1.7 0 0 0
+              9.4 15
+              1.7 1.7 0 0 0
+              7.84 13.97
+              H7
+              v-2
+              h.84
+              A1.7 1.7 0 0 0
+              9.4 11
+              1.7 1.7 0 0 0
+              9.06 9.12
+              L9 9.06
+              l1.42-1.42
+              .06.06
+              a1.7 1.7 0 0 0
+              1.88.34
+              A1.7 1.7 0 0 0
+              13.4 6.48
+              V6
+              h2
+              v.48
+              A1.7 1.7 0 0 0
+              16.43 8
+              a1.7 1.7 0 0 0
+              1.88-.34
+              l.06-.06
+              1.42 1.42
+              -.06.06
+              A1.7 1.7 0 0 0
+              19.4 11
+              a1.7 1.7 0 0 0
+              1.56 1.03
+              H21
+              v2
+              h-.04
+              A1.7 1.7 0 0 0
+              19.4 15
+              Z
+            "
+          />
+
+        </svg>
+
+
+        <span>
+          設定
+        </span>
+
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <!-- =========================================================
+       JavaScript
+  ========================================================= -->
+
+  <script>
+
+
+    // ============================================================
+    // API
+    // ============================================================
+
+    const API_URL =
+      "https://api.konnagi.com/meets-app-tver&radiko";
+
+
+    // ============================================================
+    // DOM
+    // ============================================================
+
+    const episodeList =
+      document.getElementById(
+        "episodeList"
+      );
+
+
+    const status =
+      document.getElementById(
+        "status"
+      );
+
+
+    const homePage =
+      document.getElementById(
+        "homePage"
+      );
+
+
+    const settingsPage =
+      document.getElementById(
+        "settingsPage"
+      );
+
+
+    const bottomNavItems =
+      document.querySelectorAll(
+        ".bottom-nav-item"
+      );
+
+
+    // ============================================================
+    // episodeURLから表示メッセージを判定
+    // ============================================================
+
+    function getLinkMessage(url) {
+
+      try {
+
+        const hostname =
+          new URL(url)
+            .hostname
+            .toLowerCase();
+
+
+        // TVer
+
+        if (
+          hostname === "tver.jp" ||
+          hostname.endsWith(".tver.jp")
+        ) {
+
+          return "TVerで見る ↗";
+
+        }
+
+
+        // radiko
+
+        if (
+          hostname === "radiko.jp" ||
+          hostname.endsWith(".radiko.jp")
+        ) {
+
+          return "radikoで聴く ↗";
+
+        }
+
+
+        // その他
+
+        return "";
+
+      } catch (error) {
+
+        return "";
+
+      }
+
+    }
+
+
+    // ============================================================
+    // エピソード取得
+    // ============================================================
+
+    async function loadEpisodes() {
+
+      try {
+
+        const response =
+          await fetch(
+            API_URL,
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `HTTP ${response.status}`
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (!Array.isArray(data)) {
+
+          throw new Error(
+            "APIのレスポンス形式が正しくありません"
+          );
+
+        }
+
+
+        renderEpisodes(data);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        status.textContent =
+          "エピソードを読み込めませんでした。";
+
+
+        episodeList.innerHTML = `
+          <div class="error">
+            エピソード情報を取得できませんでした。
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    // ============================================================
+    // 表示
+    // ============================================================
+
+    function renderEpisodes(episodes) {
+
+      episodeList.innerHTML = "";
+
+
+      if (episodes.length === 0) {
+
+        status.textContent =
+          "エピソードがありません。";
+
+
+        episodeList.innerHTML = `
+          <div class="error">
+            現在表示できるエピソードがありません。
+          </div>
+        `;
+
+
+        return;
+
+      }
+
+
+      status.textContent =
+        `${episodes.length}件のエピソード`;
+
+
+      episodes.forEach(
+        (episode) => {
+
+          const title =
+            episode.title ||
+            "タイトルなし";
+
+
+          const thumbnail =
+            episode.horizontal_thumbnail_path ||
+            "";
+
+
+          const episodeURL =
+            episode.episodeURL ||
+            "#";
+
+
+          const linkMessage =
+            getLinkMessage(
+              episodeURL
+            );
+
+
+          const link =
+            document.createElement(
+              "a"
+            );
+
+
+          link.className =
+            "episode";
+
+
+          link.href =
+            episodeURL;
+
+
+          link.target =
+            "_blank";
+
+
+          link.rel =
+            "noopener noreferrer";
+
+
+          const messageHTML =
+            linkMessage
+              ? `
+                <div class="episode-link">
+                  ${escapeHTML(linkMessage)}
+                </div>
+              `
+              : "";
+
+
+          link.innerHTML = `
+
+            <img
+              class="thumbnail"
+              src="${escapeHTML(thumbnail)}"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            >
+
+
+            <div class="episode-content">
+
+              <h2 class="episode-title">
+                ${escapeHTML(title)}
+              </h2>
+
+              ${messageHTML}
+
+            </div>
+
+          `;
+
+
+          episodeList.appendChild(
+            link
+          );
+
+        }
+      );
+
+    }
+
+
+    // ============================================================
+    // HTMLエスケープ
+    // ============================================================
+
+    function escapeHTML(value) {
+
+      return String(value)
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    // ============================================================
+    // ページ切り替え
+    // ============================================================
+
+    function switchPage(page) {
+
+      // 全ページを非表示
+
+      homePage.classList.remove(
+        "active"
+      );
+
+      settingsPage.classList.remove(
+        "active"
+      );
+
+
+      // 全ナビゲーションを非アクティブ
+
+      bottomNavItems.forEach(
+        (item) => {
+
+          item.classList.remove(
+            "active"
+          );
+
+          item.removeAttribute(
+            "aria-current"
+          );
+
+        }
+      );
+
+
+      // ホーム
+
+      if (page === "home") {
+
+        homePage.classList.add(
+          "active"
+        );
+
+
+        const homeButton =
+          document.querySelector(
+            '.bottom-nav-item[data-page="home"]'
+          );
+
+
+        homeButton.classList.add(
+          "active"
+        );
+
+
+        homeButton.setAttribute(
+          "aria-current",
+          "page"
+        );
+
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+
+        return;
+
+      }
+
+
+      // 設定
+
+      if (page === "settings") {
+
+        settingsPage.classList.add(
+          "active"
+        );
+
+
+        const settingsButton =
+          document.querySelector(
+            '.bottom-nav-item[data-page="settings"]'
+          );
+
+
+        settingsButton.classList.add(
+          "active"
+        );
+
+
+        settingsButton.setAttribute(
+          "aria-current",
+          "page"
+        );
+
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+
+    }
+
+
+    // ============================================================
+    // Bottom Navigation
+    // ============================================================
+
+    bottomNavItems.forEach(
+      (item) => {
+
+        item.addEventListener(
+          "click",
+          () => {
+
+            const page =
+              item.dataset.page;
+
+
+            switchPage(page);
+
+          }
+        );
+
+      }
+    );
+
+
+    // ============================================================
+    // Service Worker登録
+    // ============================================================
+
+    if (
+      "serviceWorker" in navigator
+    ) {
+
+      window.addEventListener(
+        "load",
+        async () => {
+
+          try {
+
+            const registration =
+              await navigator.serviceWorker.register(
+                "./sw.js"
+              );
+
+
+            console.log(
+              "Service Worker registered:",
+              registration.scope
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              "Service Worker registration failed:",
+              error
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // ============================================================
+    // 起動
+    // ============================================================
+
+    loadEpisodes();
+
+  </script>
+
+
+</body>
+
+</html>
