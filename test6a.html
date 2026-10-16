@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6b6cf">
+  <meta name="description" content="サクラミーツ・こち星ランキング画像メーカー">
+  <title>TVerランキング画像メーカー</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --main: #e86a9a;
+      --background: #fff8fb;
+      --text: #333333;
+      --border: #f0dce4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Noto Sans JP", sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      color: var(--main);
+      font-size: 22px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    select {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px 16px;
+      border: none;
+      border-radius: 9px;
+      background: var(--main);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #ffffff;
+      color: var(--main);
+      border: 1px solid var(--main);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .status {
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .preview-title {
+      margin: 20px 0 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* 正方形のHTML表示領域 */
+    .image-frame {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      container-type: inline-size;
+    }
+
+    .ranking-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      color: #333333;
+      isolation: isolate;
+    }
+
+    .ranking-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0.46%;
+      background: var(--main);
+    }
+
+    .program-name {
+      position: absolute;
+      top: 5.75%;
+      left: 3.7%;
+      width: 49%;
+      overflow: hidden;
+      color: var(--main);
+      font-size: 2.69cqw;
+      font-weight: 700;
+      line-height: 1.35;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .timestamp {
+      position: absolute;
+      top: 6%;
+      right: 3.7%;
+      max-width: 48%;
+      overflow: hidden;
+      color: #777777;
+      font-size: 1.76cqw;
+      font-weight: 500;
+      line-height: 1.3;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .header-line {
+      position: absolute;
+      top: 10%;
+      left: 3.7%;
+      width: 92.6%;
+      height: 2px;
+      background: var(--border);
+    }
+
+    .thumbnail-stage {
+      position: absolute;
+      top: 12.5%;
+      right: 5%;
+      bottom: 21.75%;
+      left: 5%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumbnail {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .rank-badge {
+      position: absolute;
+      left: 0;
+      bottom: 2.5%;
+      z-index: 2;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      padding: 0.93cqw 2.04cqw;
+      border-radius: 1.39cqw;
+      background: linear-gradient(135deg, #ff5b9b, #e73578);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      color: #ffffff;
+      font-size: 3.52cqw;
+      font-weight: 900;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .title-line {
+      position: absolute;
+      top: 80.37%;
+      left: 5.1%;
+      width: 89.8%;
+      height: 3px;
+      background: var(--main);
+    }
+
+    .episode-title {
+      position: absolute;
+      top: 82.5%;
+      left: 5%;
+      display: flex;
+      width: 90%;
+      height: 15.8%;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #333333;
+      font-size: 3.6cqw;
+      font-weight: 700;
+      line-height: 1.45;
+      text-align: center;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: #777777;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 19px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <h1>📺 TVerランキング画像メーカー</h1>
+
+    <div class="controls">
+      <div>
+        <label for="episode-select">エピソード・番組を選択</label>
+        <select id="episode-select" disabled>
+          <option value="">読み込み中...</option>
+        </select>
+      </div>
+
+      <button id="reload-button" type="button">
+        🔄 最新データを取得
+      </button>
+
+      <button id="share-button" type="button" disabled>
+        📸 画面キャプチャしてXでシェア
+      </button>
+
+      <button id="save-button" class="secondary" type="button" disabled>
+        📥 PNG画像を保存
+      </button>
+    </div>
+
+    <div id="status" class="status" role="status" aria-live="polite">
+      APIから番組データを取得しています...
+    </div>
+
+    <div class="preview-title">プレビュー（1:1）</div>
+
+    <div class="image-frame">
+      <div id="ranking-card" class="ranking-card">
+        <div id="program-name" class="program-name">サクラミーツ</div>
+        <div id="timestamp" class="timestamp">取得日時</div>
+        <div class="header-line"></div>
+
+        <div id="thumbnail-stage" class="thumbnail-stage">
+          <img
+            id="thumbnail"
+            class="thumbnail"
+            alt="番組サムネイル"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+          >
+          <div id="rank-badge" class="rank-badge"></div>
+        </div>
+
+        <div class="title-line"></div>
+        <div id="episode-title" class="episode-title">エピソードタイトル</div>
+      </div>
+    </div>
+
+    <p class="note">
+      ・API：api.konnagi.com/meets-app-tver&amp;radiko<br>
+      ・TVerのサムネイルはエピソードIDから取得します。<br>
+      ・radikoはAPIが返すサムネイルURLを使用します。<br>
+      ・HTMLをキャプチャしてPNGに変換します。<br>
+      ・共有先は端末・ブラウザのWeb Share APIに依存します。<br>
+      ・順位データはAPIに含まれていないため、順位バッジは非表示です。
+    </p>
+  </main>
+
+  <script>
+    "use strict";
+
+    // =========================================================
+    // 設定
+    // =========================================================
+
+    const CONFIG = {
+      API_URL: "https://api.konnagi.com/meets-app-tver&radiko",
+
+      // TVerのサムネイルURLテンプレート
+      // {id} をエピソードIDに置換する
+      TVER_THUMBNAIL_TEMPLATE:
+        "https://image-cdn.tver.jp/w=800,dpr=2/images/content/thumbnail/episode/xlarge/{id}.jpg",
+
+      // キャプチャ倍率
+      CAPTURE_SCALE: 3,
+
+      SHARE_TITLE: "TVerランキング",
+      SHARE_TEXT: "TVerランキング📺"
+    };
+
+    // =========================================================
+    // DOM
+    // =========================================================
+
+    const card = document.getElementById("ranking-card");
+    const programNameElement = document.getElementById("program-name");
+    const timestampElement = document.getElementById("timestamp");
+    const thumbnailElement = document.getElementById("thumbnail");
+    const rankBadge = document.getElementById("rank-badge");
+    const episodeTitleElement = document.getElementById("episode-title");
+
+    const select = document.getElementById("episode-select");
+    const reloadButton = document.getElementById("reload-button");
+    const shareButton = document.getElementById("share-button");
+    const saveButton = document.getElementById("save-button");
+    const status = document.getElementById("status");
+
+    let episodes = [];
+    let currentEpisode = null;
+    let renderVersion = 0;
+    let imageReady = false;
+    let isBusy = false;
+
+    // =========================================================
+    // 共通関数
+    // =========================================================
+
+    function formatDate(date) {
+      return new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
+    function getEpisodeId(url) {
+      if (!url) return "";
+
+      try {
+        const parsed = new URL(url);
+
+        if (
+          parsed.hostname === "tver.jp" ||
+          parsed.hostname.endsWith(".tver.jp")
+        ) {
+          const match = parsed.pathname.match(
+            /\/episodes\/([a-zA-Z0-9_-]+)/
+          );
+
+          return match ? match[1] : "";
+        }
+      } catch (error) {
+        console.warn("URL解析エラー:", error);
+      }
+
+      return "";
+    }
+
+    function isRadiko(url) {
+      try {
+        return new URL(url).hostname === "radiko.jp" ||
+          new URL(url).hostname.endsWith(".radiko.jp");
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function getThumbnailUrl(item) {
+      const episodeId = getEpisodeId(item.episodeURL);
+
+      // TVerの場合はエピソードIDからURLを生成
+      if (episodeId) {
+        return CONFIG.TVER_THUMBNAIL_TEMPLATE.replace(
+          "{id}",
+          encodeURIComponent(episodeId)
+        );
+      }
+
+      // radikoなどはAPIが返す画像URLを利用
+      if (item.horizontal_thumbnail_path) {
+        return item.horizontal_thumbnail_path;
+      }
+
+      return "";
+    }
+
+    function getProgramName(item) {
+      if (isRadiko(item.episodeURL)) {
+        return "櫻坂46こち星";
+      }
+
+      return "サクラミーツ";
+    }
+
+    function updateHeader(item) {
+      programNameElement.textContent = getProgramName(item);
+      timestampElement.textContent = formatDate(new Date());
+    }
+
+    function updateTitle(title) {
+      episodeTitleElement.textContent =
+        title || "エピソードタイトルなし";
+
+      fitTitle();
+    }
+
+    function updateRank() {
+      // APIに順位情報がないため、バッジは非表示
+      rankBadge.style.display = "none";
+      rankBadge.textContent = "";
+    }
+
+    function fitTitle() {
+      const element = episodeTitleElement;
+
+      element.style.fontSize = "3.6cqw";
+
+      let fontSize = 3.6;
+      let attempts = 0;
+
+      while (
+        attempts < 30 &&
+        fontSize > 2.3 &&
+        (
+          element.scrollHeight > element.clientHeight + 1 ||
+          element.scrollWidth > element.clientWidth + 1
+        )
+      ) {
+        fontSize -= 0.1;
+        element.style.fontSize = fontSize + "cqw";
+        attempts++;
+      }
+    }
+
+    // =========================================================
+    // 画像読み込み
+    // =========================================================
+
+    function loadImage(url) {
+      return new Promise((resolve, reject) => {
+        if (!url) {
+          reject(new Error("サムネイルURLがありません。"));
+          return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.referrerPolicy = "no-referrer";
+
+        img.onload = () => {
+          if (img.naturalWidth && img.naturalHeight) {
+            resolve(img);
+          } else {
+            reject(new Error("サムネイル画像が空です。"));
+          }
+        };
+
+        img.onerror = () => {
+          reject(
+            new Error(
+              "サムネイルを取得できませんでした。画像URLまたは配信元のCORS設定を確認してください。"
+            )
+          );
+        };
+
+        img.src = url;
+      });
+    }
+
+    // =========================================================
+    // 選択エピソードを表示
+    // =========================================================
+
+    async function renderEpisode(item) {
+      const version = ++renderVersion;
+
+      currentEpisode = item;
+      imageReady = false;
+      shareButton.disabled = true;
+      saveButton.disabled = true;
+
+      updateHeader(item);
+      updateTitle(item.title);
+      updateRank();
+
+      thumbnailElement.removeAttribute("src");
+
+      const thumbnailUrl = getThumbnailUrl(item);
+
+      status.textContent =
+        "サムネイルを読み込んでいます...\n" +
+        "画像URL：" + thumbnailUrl;
+
+      try {
+        const loadedImage = await loadImage(thumbnailUrl);
+
+        if (version !== renderVersion) return;
+
+        thumbnailElement.src = loadedImage.src;
+        thumbnailElement.alt = getProgramName(item) + "のサムネイル";
+
+        if (!thumbnailElement.complete) {
+          await new Promise((resolve, reject) => {
+            thumbnailElement.onload = resolve;
+            thumbnailElement.onerror = () =>
+              reject(new Error("表示用画像の読み込みに失敗しました。"));
+          });
+        }
+
+        if (version !== renderVersion) return;
+
+        fitTitle();
+
+        imageReady = true;
+        shareButton.disabled = false;
+        saveButton.disabled = false;
+
+        status.textContent =
+          "表示しました。\n" +
+          "番組：" + getProgramName(item) + "\n" +
+          "エピソードID：" + (getEpisodeId(item.episodeURL) || "なし") + "\n" +
+          "サムネイルURL：" + thumbnailUrl;
+
+      } catch (error) {
+        if (version !== renderVersion) return;
+
+        imageReady = false;
+        shareButton.disabled = true;
+        saveButton.disabled = true;
+
+        status.textContent =
+          "サムネイル表示エラー：" + error.message;
+
+        console.error(error);
+      }
+    }
+
+    // =========================================================
+    // APIから番組データを取得
+    // =========================================================
+
+    async function loadEpisodes() {
+      reloadButton.disabled = true;
+      select.disabled = true;
+      shareButton.disabled = true;
+      saveButton.disabled = true;
+
+      status.textContent = "APIから番組データを取得しています...";
+
+      try {
+        const response = await fetch(
+          CONFIG.API_URL + (CONFIG.API_URL.includes("?") ? "&" : "?") +
+          "_=" + Date.now(),
+          {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+              "Accept": "application/json"
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("APIの戻り値が配列ではありません。");
+        }
+
+        episodes = data.filter(item =>
+          item &&
+          typeof item.title === "string" &&
+          typeof item.episodeURL === "string"
+        );
+
+        if (!episodes.length) {
+          throw new Error("有効な番組データがありません。");
+        }
+
+        select.replaceChildren();
+
+        episodes.forEach((item, index) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+
+          const episodeId = getEpisodeId(item.episodeURL);
+          const program = getProgramName(item);
+          const idLabel = episodeId ? " [" + episodeId + "]" : "";
+
+          option.textContent =
+            program + "｜" + item.title + idLabel;
+
+          select.appendChild(option);
+        });
+
+        select.disabled = false;
+
+        status.textContent =
+          episodes.length + "件の番組データを取得しました。";
+
+        await renderEpisode(episodes[0]);
+
+      } catch (error) {
+        console.error(error);
+
+        episodes = [];
+        currentEpisode = null;
+        imageReady = false;
+
+        select.replaceChildren();
+
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "データを取得できませんでした";
+        select.appendChild(option);
+
+        select.disabled = true;
+
+        status.textContent =
+          "データ取得エラー：" + error.message +
+          "\nAPIの公開状態とCORS設定を確認してください。";
+
+      } finally {
+        reloadButton.disabled = false;
+      }
+    }
+
+    // =========================================================
+    // HTMLをPNG画像としてキャプチャ
+    // =========================================================
+
+    async function captureImage() {
+      if (!imageReady || !currentEpisode) {
+        throw new Error("キャプチャできる画像がありません。");
+      }
+
+      if (typeof html2canvas !== "function") {
+        throw new Error(
+          "html2canvasを読み込めません。通信環境を確認してください。"
+        );
+      }
+
+      if (!thumbnailElement.complete || !thumbnailElement.naturalWidth) {
+        throw new Error("サムネイルが読み込まれていません。");
+      }
+
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+
+      await new Promise(resolve =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(resolve)
+        )
+      );
+
+      fitTitle();
+
+      const canvas = await html2canvas(card, {
+        backgroundColor: "#ffffff",
+        scale: CONFIG.CAPTURE_SCALE,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        imageTimeout: 15000,
+        width: card.clientWidth,
+        height: card.clientHeight,
+        scrollX: 0,
+        scrollY: 0
+      });
+
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (!blob) {
+            reject(new Error("PNG画像を生成できませんでした。"));
+            return;
+          }
+
+          resolve(blob);
+        }, "image/png");
+      });
+    }
+
+    // =========================================================
+    // ファイル名
+    // =========================================================
+
+    function getFileName() {
+      const episodeId = currentEpisode
+        ? getEpisodeId(currentEpisode.episodeURL)
+        : "";
+
+      const id = episodeId || "radiko";
+
+      return "tver-ranking-" +
+        id.replace(/[^a-zA-Z0-9_-]/g, "_") +
+        ".png";
+    }
+
+    // =========================================================
+    // PNGを保存
+    // =========================================================
+
+    async function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = fileName;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }
+
+    async function saveImage() {
+      if (isBusy) return;
+
+      isBusy = true;
+      shareButton.disabled = true;
+      saveButton.disabled = true;
+
+      try {
+        status.textContent = "PNG画像を生成しています...";
+
+        const blob = await captureImage();
+        await downloadBlob(blob, getFileName());
+
+        status.textContent = "PNG画像の保存を開始しました。";
+
+      } catch (error) {
+        console.error(error);
+        status.textContent = "保存エラー：" + error.message;
+
+      } finally {
+        isBusy = false;
+        shareButton.disabled = !imageReady;
+        saveButton.disabled = !imageReady;
+      }
+    }
+
+    // =========================================================
+    // Web Share APIで画像を共有
+    // =========================================================
+
+    async function shareImage() {
+      if (isBusy) return;
+
+      if (!navigator.share) {
+        status.textContent =
+          "このブラウザはWeb Share APIに対応していません。\n" +
+          "PNG画像を保存してXに添付してください。";
+        return;
+      }
+
+      isBusy = true;
+      shareButton.disabled = true;
+      saveButton.disabled = true;
+
+      try {
+        status.textContent = "画面をキャプチャしています...";
+
+        const blob = await captureImage();
+
+        const file = new File(
+          [blob],
+          getFileName(),
+          { type: "image/png" }
+        );
+
+        if (
+          typeof navigator.canShare !== "function" ||
+          !navigator.canShare({ files: [file] })
+        ) {
+          await downloadBlob(blob, getFileName());
+
+          status.textContent =
+            "この環境は画像ファイルの共有に対応していません。\n" +
+            "PNG画像を保存しました。Xに添付してください。";
+
+          return;
+        }
+
+        status.textContent =
+          "共有メニューを開きます。共有先でXを選択してください。";
+
+        await navigator.share({
+          files: [file],
+          title: CONFIG.SHARE_TITLE,
+          text: CONFIG.SHARE_TEXT
+        });
+
+        status.textContent =
+          "共有画面を終了しました。";
+
+      } catch (error) {
+        if (error.name === "AbortError") {
+          status.textContent = "共有をキャンセルしました。";
+        } else {
+          console.error(error);
+
+          status.textContent =
+            "共有エラー：" + error.message +
+            "\nPNG画像を保存して共有することもできます。";
+        }
+
+      } finally {
+        isBusy = false;
+        shareButton.disabled = !imageReady;
+        saveButton.disabled = !imageReady;
+      }
+    }
+
+    // =========================================================
+    // イベント
+    // =========================================================
+
+    select.addEventListener("change", () => {
+      const item = episodes[Number(select.value)];
+
+      if (item) {
+        renderEpisode(item);
+      }
+    });
+
+    reloadButton.addEventListener("click", loadEpisodes);
+    shareButton.addEventListener("click", shareImage);
+    saveButton.addEventListener("click", saveImage);
+
+    // 初回読み込み
+    loadEpisodes();
+  </script>
+</body>
+</html>
