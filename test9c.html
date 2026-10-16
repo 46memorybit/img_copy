@@ -709,19 +709,19 @@
       rankingCtx.fillStyle = "#2a2430";
       rankingCtx.textAlign = "left";
       rankingCtx.textBaseline = "middle";
-      const maxProgramWidth = 480;
+      const maxProgramWidth = 500;
       const originalProgram = String(programName || "番組名なし");
       let program = originalProgram;
       while (rankingCtx.measureText(program).width > maxProgramWidth && program.length > 1) {
         program = program.slice(0, -1);
       }
       if (program !== originalProgram) program = program.slice(0, -1) + "…";
-      rankingCtx.fillText(program, padding, 92);
+      rankingCtx.fillText(program, padding, 108);
       const dateText = formatDate(timestamp);
       rankingCtx.font = `500 18px "Zen Kaku Gothic New", sans-serif`;
       rankingCtx.fillStyle = "#7d727a";
       rankingCtx.textAlign = "right";
-      rankingCtx.fillText(dateText, size - padding, 92);
+      rankingCtx.fillText(dateText, size - padding - 10, 118);
     }
 
     function wrapRankingText(text, maxWidth) {
@@ -817,8 +817,8 @@
       const width = img.naturalWidth * scale;
       const height = img.naturalHeight * scale;
       const x = (size - width) / 2;
-      const minY = 160;
-      const maxY = 800;
+      const minY = 180;
+      const maxY = 780;
       const availableHeight = maxY - minY;
       const y = minY + (availableHeight - height) / 2;
       rankingCtx.save();
@@ -840,8 +840,8 @@
       const size = RANKING_CONFIG.IMAGE_SIZE;
       const logoWidth = 110;
       const logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth;
-      const x = size - logoWidth - 40;
-      const y = 28;
+      const x = size - logoWidth - 36;
+      const y = 20;
       rankingCtx.save();
       rankingCtx.globalAlpha = 0.95;
       rankingCtx.drawImage(logoImg, x, y, logoWidth, logoHeight);
@@ -855,7 +855,7 @@
       rankingCtx.fillStyle = "#e86a9a";
       rankingCtx.textAlign = "left";
       rankingCtx.textBaseline = "middle";
-      rankingCtx.fillText("TVerランキング", 48, 42);
+      rankingCtx.fillText("TVerランキング", 48, 52);
       rankingCtx.restore();
     }
 
@@ -866,7 +866,7 @@
       rankingCtx.fillStyle = "#7d727a";
       rankingCtx.textAlign = "left";
       rankingCtx.textBaseline = "bottom";
-      rankingCtx.fillText("https://meets.konnagi.com/", 36, size - 28);
+      rankingCtx.fillText("https://meets.konnagi.com/", 40, size - 32);
       rankingCtx.restore();
     }
 
