@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6b6cf">
+  <meta name="theme-color" content="#1a1a1a">
   <title>TVerランキング画像メーカー</title>
   <style>
     :root {
@@ -84,7 +84,7 @@
       width: 100%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
-      background: #fff;
+      background: #111;
       border: 1px solid var(--border);
       border-radius: 4px;
     }
@@ -140,9 +140,9 @@
     </div>
     <p class="note">
       ・画像サイズ：1080 × 1080 px<br>
-      ・サムネイル：横幅最大90%、中央配置<br>
+      ・サムネイル：横幅最大82%、中央配置（角丸＋影）<br>
       ・順位バッジ：黒背景に白の大きな「#順位」<br>
-      ・順位を大きく表示し、サムネイル左下に重ねます。<br>
+      ・順位バッジはサムネイル左下からはみ出す位置に配置<br>
       ・元画像のアスペクト比を維持し、切り取りません。<br>
       ・画像URL：GitHub Pages<br>
       ・保存形式：PNG
@@ -156,14 +156,11 @@
       PUBLISHED_ID:
         "2PACX-1vTJofs8FiOCnnavLtBInpn1d6u9YiJ6kZLFDBNI8iRTL4RBJBz3PSQtMSiSKt35B0xgtv6p9zKTy-75",
       GID: "91701956",
-      // GitHub Pagesのサムネイル画像
       THUMBNAIL_BASE:
         "https://46memorybit.github.io/meets_tver_thumbnail/images/",
       IMAGE_SIZE: 1080,
-      // サムネイルの最大幅
-      THUMBNAIL_WIDTH_RATE: 0.90,
-      // サムネイルの最大高さ
-      THUMBNAIL_MAX_HEIGHT: 620
+      THUMBNAIL_WIDTH_RATE: 0.82,
+      THUMBNAIL_MAX_HEIGHT: 560
     };
     CONFIG.CSV_URL =
       "https://docs.google.com/spreadsheets/d/e/" +
@@ -171,7 +168,6 @@
       "/pub?gid=" +
       CONFIG.GID +
       "&single=true&output=csv";
-    // CSVの列番号（0始まり）
     const COLUMNS = {
       timestamp: 0,
       rankingType: 1,
@@ -282,12 +278,15 @@
       }).format(date);
     }
     // =========================================================
-    // 背景
+    // 背景（ダークグラデーション）
     // =========================================================
     function drawBackground() {
       const size = CONFIG.IMAGE_SIZE;
       ctx.clearRect(0, 0, size, size);
-      ctx.fillStyle = "#ffffff";
+      const gradient = ctx.createLinearGradient(0, 0, 0, size);
+      gradient.addColorStop(0, "#1c1c1e");
+      gradient.addColorStop(1, "#0d0d0f");
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, size, size);
     }
     // =========================================================
@@ -295,16 +294,14 @@
     // =========================================================
     function drawHeader(programName, timestamp) {
       const size = CONFIG.IMAGE_SIZE;
-      const padding = 40;
-      const fontSize = 29;
-      ctx.fillStyle = "#e86a9a";
-      ctx.fillRect(0, 0, size, 5);
+      const padding = 48;
+      const fontSize = 28;
       // 左上：番組名
       ctx.font = `700 ${fontSize}px sans-serif`;
-      ctx.fillStyle = "#e86a9a";
+      ctx.fillStyle = "#ffffff";
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
-      const maxProgramWidth = 540;
+      const maxProgramWidth = 560;
       const originalProgram = String(programName || "番組名なし");
       let program = originalProgram;
       while (
@@ -316,36 +313,27 @@
       if (program !== originalProgram) {
         program = program.slice(0, -1) + "…";
       }
-      ctx.fillText(program, padding, 62);
+      ctx.fillText(program, padding, 68);
       // 右上：取得日時
       const dateText = formatDate(timestamp);
-      ctx.font = "500 19px sans-serif";
-      ctx.fillStyle = "#777777";
+      ctx.font = "500 18px sans-serif";
+      ctx.fillStyle = "#aaaaaa";
       ctx.textAlign = "right";
-      ctx.fillText(dateText, size - padding, 62);
-      // 区切り線
-      ctx.strokeStyle = "#f0dce4";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(padding, 108);
-      ctx.lineTo(size - padding, 108);
-      ctx.stroke();
+      ctx.fillText(dateText, size - padding, 68);
     }
     // =========================================================
     // エピソードタイトル
     // =========================================================
     function drawEpisodeTitle(title) {
       const size = CONFIG.IMAGE_SIZE;
-      const padding = 55;
+      const padding = 60;
       const maxWidth = size - padding * 2;
       const text = String(title || "エピソードタイトルなし");
-      ctx.fillStyle = "#e86a9a";
-      ctx.fillRect(padding, 868, size - padding * 2, 3);
-      ctx.fillStyle = "#333333";
+      ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const maxFontSize = 39;
-      const minFontSize = 25;
+      const maxFontSize = 36;
+      const minFontSize = 24;
       let fontSize = maxFontSize;
       while (fontSize > minFontSize) {
         ctx.font = `700 ${fontSize}px sans-serif`;
@@ -367,8 +355,7 @@
         visibleLines[2] = last + "…";
       }
       const lineHeight = fontSize * 1.45;
-      const startY =
-        925 - ((visibleLines.length - 1) * lineHeight) / 2;
+      const startY = 920 - ((visibleLines.length - 1) * lineHeight) / 2;
       visibleLines.forEach((line, index) => {
         ctx.fillText(
           line,
@@ -397,71 +384,56 @@
       return lines;
     }
     // =========================================================
-    // 大きく目立つ順位バッジ（YouTube Music風）
-    // 黒背景＋白の大きな「#順位」
-    // サムネイルの左下に重ねて表示
+    // 順位バッジ（おしゃれな黒角丸）
     // =========================================================
-    function drawRankBadge(rank, x, bottomY) {
+    function drawRankBadge(rank, thumbX, thumbY, thumbHeight) {
       const rawRank = String(rank ?? "").trim();
       if (!rawRank) return;
-
       const label = `#${rawRank}`;
-
       ctx.save();
-
-      const fontSize = 68;
-      const paddingX = 30;
-      const badgeHeight = 108;
-
+      const fontSize = 62;
+      const paddingX = 28;
+      const badgeHeight = 96;
       ctx.font = `900 ${fontSize}px sans-serif`;
       const badgeWidth = Math.max(
-        168,
+        150,
         ctx.measureText(label).width + paddingX * 2
       );
-
-      const badgeX = x + 22;
-      const badgeY = bottomY - badgeHeight - 20;
-      const radius = 18;
-
+      // サムネイルの左下からはみ出す位置
+      const badgeX = thumbX - 18;
+      const badgeY = thumbY + thumbHeight - badgeHeight + 28;
+      const radius = 20;
       // 影
-      ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
-      ctx.shadowBlur = 14;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.55)";
+      ctx.shadowBlur = 16;
       ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 5;
-
+      ctx.shadowOffsetY = 6;
       // 黒背景
       ctx.beginPath();
       ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, radius);
       ctx.fillStyle = "#111111";
       ctx.fill();
-
-      // 薄い白の縁
+      // 薄い縁
       ctx.shadowColor = "transparent";
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
       ctx.lineWidth = 1.5;
       ctx.stroke();
-
-      // 白い順位文字
+      // 白い文字
       ctx.fillStyle = "#FFFFFF";
       ctx.font = `900 ${fontSize}px sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-
       const textX = badgeX + badgeWidth / 2;
       const textY = badgeY + badgeHeight / 2 + 1;
-
       ctx.fillText(label, textX, textY);
-
       ctx.restore();
     }
     // =========================================================
-    // サムネイル描画
-    // アスペクト比を維持し、切り取り・引き伸ばしをしない
+    // サムネイル描画（角丸＋影）
     // =========================================================
     function drawThumbnail(img, rank) {
       const size = CONFIG.IMAGE_SIZE;
-      const maxWidth =
-        size * CONFIG.THUMBNAIL_WIDTH_RATE;
+      const maxWidth = size * CONFIG.THUMBNAIL_WIDTH_RATE;
       const maxHeight = CONFIG.THUMBNAIL_MAX_HEIGHT;
       const scale = Math.min(
         maxWidth / img.naturalWidth,
@@ -470,14 +442,25 @@
       const width = img.naturalWidth * scale;
       const height = img.naturalHeight * scale;
       const x = (size - width) / 2;
-      // サムネイルの配置範囲
-      const minY = 135;
-      const maxY = 845;
+      const minY = 160;
+      const maxY = 800;
       const availableHeight = maxY - minY;
       const y = minY + (availableHeight - height) / 2;
+      // 影
+      ctx.save();
+      ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
+      ctx.shadowBlur = 28;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 10;
+      // 角丸クリップ
+      const radius = 18;
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, height, radius);
+      ctx.clip();
       ctx.drawImage(img, x, y, width, height);
-      // 順位バッジをサムネイル左下に重ねる
-      drawRankBadge(rank, x, y + height);
+      ctx.restore();
+      // 順位バッジ
+      drawRankBadge(rank, x, y, height);
     }
     // =========================================================
     // 画像の生成
@@ -502,7 +485,6 @@
           "エピソードIDがないため、サムネイルを表示できません。";
         return;
       }
-      // GitHub Pagesの画像URLのみを使用
       const imageUrl =
         CONFIG.THUMBNAIL_BASE +
         encodeURIComponent(episodeId) +
@@ -511,7 +493,6 @@
         "サムネイルを読み込んでいます...";
       try {
         const img = new Image();
-        // Canvasへの描画とPNG保存のためCORSを指定
         img.crossOrigin = "anonymous";
         img.referrerPolicy = "no-referrer";
         await new Promise((resolve, reject) => {
@@ -539,7 +520,6 @@
         drawHeader(programName, latestTimestamp);
         drawThumbnail(img, row[COLUMNS.rank]);
         drawEpisodeTitle(episodeTitle);
-        // CanvasがPNGとして出力できるか確認
         await new Promise((resolve, reject) => {
           canvas.toBlob(
             blob => {
@@ -608,7 +588,6 @@
         if (!parsedRows.length) {
           throw new Error("CSVにデータがありません。");
         }
-        // ヘッダー行を自動判定
         let dataRows = parsedRows;
         const firstRow = parsedRows[0].map(v =>
           v.trim().replace(/\s+/g, "").toLowerCase()
@@ -620,7 +599,6 @@
         ) {
           dataRows = parsedRows.slice(1);
         }
-        // 有効な取得日時がある行を抽出
         const validRows = dataRows
           .map(row => ({
             row,
@@ -634,7 +612,6 @@
             "有効な取得日時が見つかりません。CSVの列構成を確認してください。"
           );
         }
-        // 最新取得日時を特定
         const latestTime = Math.max(
           ...validRows.map(
             item => item.timestamp.getTime()
@@ -650,7 +627,6 @@
         if (!latestRows.length) {
           throw new Error("最新データがありません。");
         }
-        // エピソード選択リストを生成
         select.replaceChildren();
         latestRows.forEach((row, index) => {
           const option = document.createElement("option");
