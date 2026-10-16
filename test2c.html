@@ -1,0 +1,1197 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TVerランキング画像メーカー</title>
+
+  <style>
+    :root {
+      --pink: #e86a9a;
+      --pink-light: #f58bca;
+      --background: #fff7fa;
+      --text: #33313a;
+      --muted: #77717b;
+      --border: #f0dce5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px 40px;
+      color: var(--text);
+      background: var(--background);
+      font-family:
+        "Noto Sans JP",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .description {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .panel {
+      padding: 20px;
+      margin-bottom: 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 8px 28px rgba(132, 62, 94, 0.06);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    select {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 12px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.86;
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+      transform: none;
+    }
+
+    .primary {
+      color: #fff;
+      background: linear-gradient(135deg, #f58bca, #e86a9a);
+      box-shadow: 0 4px 12px rgba(232, 106, 154, 0.22);
+    }
+
+    .secondary {
+      color: #5c4651;
+      background: #f8edf2;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .preview-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 12px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .preview-heading span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .preview-wrap {
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 16px 10px 28px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <h1>TVerランキング画像メーカー</h1>
+    <p class="description">
+      最新のランキングデータから、順位入りの正方形画像を作成します。
+      作成した画像はPNG形式で保存できます。
+    </p>
+
+    <section class="panel">
+      <label for="episode-select">エピソードを選択</label>
+      <select id="episode-select" disabled>
+        <option value="">データを読み込んでいます…</option>
+      </select>
+
+      <div class="buttons">
+        <button id="reload-button" class="secondary" type="button">
+          ↻ 最新データを再取得
+        </button>
+
+        <button id="save-button" class="primary" type="button" disabled>
+          ↓ PNG画像を保存
+        </button>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite">
+        公開CSVを読み込んでいます…
+      </div>
+    </section>
+
+    <section>
+      <h2 class="preview-heading">
+        画像プレビュー
+        <span>1080 × 1080 px</span>
+      </h2>
+
+      <div class="preview-wrap">
+        <canvas id="canvas" width="1080" height="1080">
+          このブラウザはCanvasに対応していません。
+        </canvas>
+      </div>
+
+      <p class="note">
+        ※ 最新取得日時のデータを対象にしています。<br>
+        ※ サムネイルは切り取らず、元のアスペクト比を維持して表示します。<br>
+        ※ PNG保存には、TVerの画像サーバーがCanvasへの画像利用を許可している必要があります。
+      </p>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    // =========================================================
+    // 設定
+    // =========================================================
+
+    const CONFIG = {
+      // Googleスプレッドシートの公開ID
+      PUBLISHED_ID:
+        "2PACx-1vTJofs8FiOCnnavLtBInpn1d6u9YiJ6kZLFDBNI8iRTL4RBJBz3PSQtMSiSKt35B0xgtv6p9zKTy-75",
+
+      // 対象シートのGID
+      GID: "91701956",
+
+      // PNG画像サイズ
+      IMAGE_SIZE: 1080,
+
+      // サムネイルの最大横幅（画像全体の90%）
+      THUMBNAIL_WIDTH_RATE: 0.90,
+
+      // サムネイルの最大高さ
+      THUMBNAIL_MAX_HEIGHT: 610,
+
+      // TVerのサムネイルURL
+      THUMBNAIL_BASE:
+        "https://image-cdn.tver.jp/w=800,dpr=2/images/content/thumbnail/episode/xlarge/",
+
+      get CSV_URL() {
+        return (
+          "https://docs.google.com/spreadsheets/d/e/" +
+          this.PUBLISHED_ID +
+          "/pub?gid=" +
+          this.GID +
+          "&single=true&output=csv"
+        );
+      }
+    };
+
+    // CSVの列番号（0から数える）
+    const DEFAULT_COLUMNS = {
+      timestamp: 0,
+      rankingType: 1,
+      rankingId: 2,
+      rank: 3,
+      episodeId: 4,
+      seriesId: 5,
+      programName: 6,
+      episodeTitle: 7,
+      station: 8,
+      broadcastDate: 9
+    };
+
+    // CSVの見出しから列を特定するための別名
+    const COLUMN_ALIASES = {
+      timestamp: [
+        "取得日時", "取得時刻", "取得日", "取得時間", "timestamp"
+      ],
+      rankingType: [
+        "ランキング種別", "ランキング種類", "種別", "カテゴリ", "ランキング名"
+      ],
+      rankingId: [
+        "ランキングid", "ランキングＩＤ", "カテゴリid"
+      ],
+      rank: [
+        "順位", "ランキング順位", "rank"
+      ],
+      episodeId: [
+        "エピソードid", "episodeid", "episode_id"
+      ],
+      seriesId: [
+        "シリーズid", "seriesid", "series_id"
+      ],
+      programName: [
+        "番組名", "番組タイトル", "番組"
+      ],
+      episodeTitle: [
+        "エピソードタイトル", "エピソード名", "タイトル", "episode_title"
+      ],
+      station: [
+        "放送局", "放送局名", "配信元"
+      ],
+      broadcastDate: [
+        "放送日", "放送日時", "配信日"
+      ]
+    };
+
+    // =========================================================
+    // DOM・状態
+    // =========================================================
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const select = document.getElementById("episode-select");
+    const reloadButton = document.getElementById("reload-button");
+    const saveButton = document.getElementById("save-button");
+    const statusElement = document.getElementById("status");
+
+    let latestEpisodes = [];
+    let selectedEpisode = null;
+    let currentImage = null;
+
+    // =========================================================
+    // ステータス表示
+    // =========================================================
+
+    function setStatus(message) {
+      statusElement.textContent = message;
+    }
+
+    // =========================================================
+    // CSVパーサー
+    // ダブルクォート内のカンマ・改行にも対応
+    // =========================================================
+
+    function parseCSV(csvText) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      const text = csvText.replace(/^\uFEFF/, "");
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          row.push(cell);
+          cell = "";
+        } else if (
+          (char === "\n" || char === "\r") &&
+          !inQuotes
+        ) {
+          if (char === "\r" && next === "\n") {
+            i++;
+          }
+
+          row.push(cell);
+
+          if (row.some(value => value.trim() !== "")) {
+            rows.push(row);
+          }
+
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+
+      row.push(cell);
+
+      if (row.some(value => value.trim() !== "")) {
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    // =========================================================
+    // CSVの見出しを正規化
+    // =========================================================
+
+    function normalizeHeader(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[＿]/g, "_");
+    }
+
+    function detectColumns(header) {
+      const normalized = header.map(normalizeHeader);
+      const columns = { ...DEFAULT_COLUMNS };
+
+      for (const [field, aliases] of Object.entries(COLUMN_ALIASES)) {
+        const normalizedAliases = aliases.map(normalizeHeader);
+        const index = normalized.findIndex(value =>
+          normalizedAliases.includes(value)
+        );
+
+        if (index !== -1) {
+          columns[field] = index;
+        }
+      }
+
+      return columns;
+    }
+
+    // =========================================================
+    // 日時の解析
+    // =========================================================
+
+    function parseTimestamp(value) {
+      const text = String(value || "").trim();
+
+      if (!text) {
+        return null;
+      }
+
+      // 一般的な日時形式を優先して処理
+      const normalized = text
+        .replace(/年/g, "-")
+        .replace(/月/g, "-")
+        .replace(/日/g, "")
+        .replace(/[年月]/g, "-")
+        .replace(/[時]/g, ":")
+        .replace(/[分]/g, ":")
+        .replace(/秒/g, "")
+        .replace(/\//g, "-")
+        .trim();
+
+      const parsed = new Date(normalized);
+
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed;
+      }
+
+      return null;
+    }
+
+    function getTimestampValue(episode) {
+      const date = parseTimestamp(episode.timestamp);
+      return date ? date.getTime() : null;
+    }
+
+    function formatTimestamp(value) {
+      const date = parseTimestamp(value);
+
+      if (!date) {
+        return String(value || "取得日時不明");
+      }
+
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hour = String(date.getHours()).padStart(2, "0");
+      const minute = String(date.getMinutes()).padStart(2, "0");
+      const second = String(date.getSeconds()).padStart(2, "0");
+
+      return `${year}/${month}/${day} ${hour}:${minute}:${second}`;
+    }
+
+    // =========================================================
+    // CSVをランキングデータに変換
+    // =========================================================
+
+    function convertRowsToEpisodes(rows) {
+      if (!rows.length) {
+        return [];
+      }
+
+      let columns;
+      let startIndex = 0;
+
+      const firstRow = rows[0].map(normalizeHeader);
+      const hasHeader = firstRow.some(value =>
+        [
+          "取得日時",
+          "取得時刻",
+          "ランキング種別",
+          "順位",
+          "エピソードid",
+          "番組名"
+        ].map(normalizeHeader).includes(value)
+      );
+
+      if (hasHeader) {
+        columns = detectColumns(rows[0]);
+        startIndex = 1;
+      } else {
+        columns = { ...DEFAULT_COLUMNS };
+      }
+
+      const episodes = [];
+
+      for (let i = startIndex; i < rows.length; i++) {
+        const row = rows[i];
+
+        const get = field =>
+          String(row[columns[field]] ?? "").trim();
+
+        const episode = {
+          timestamp: get("timestamp"),
+          rankingType: get("rankingType"),
+          rankingId: get("rankingId"),
+          rank: get("rank"),
+          episodeId: get("episodeId"),
+          seriesId: get("seriesId"),
+          programName: get("programName"),
+          episodeTitle: get("episodeTitle"),
+          station: get("station"),
+          broadcastDate: get("broadcastDate")
+        };
+
+        if (!episode.timestamp || !episode.episodeId) {
+          continue;
+        }
+
+        if (getTimestampValue(episode) === null) {
+          continue;
+        }
+
+        episodes.push(episode);
+      }
+
+      return episodes;
+    }
+
+    // =========================================================
+    // 最新取得日時の行だけを抽出
+    // =========================================================
+
+    function filterLatestEpisodes(episodes) {
+      if (!episodes.length) {
+        return [];
+      }
+
+      const validTimestamps = episodes
+        .map(getTimestampValue)
+        .filter(value => value !== null);
+
+      if (!validTimestamps.length) {
+        return [];
+      }
+
+      const latestTimestamp = Math.max(...validTimestamps);
+
+      return episodes.filter(
+        episode => getTimestampValue(episode) === latestTimestamp
+      );
+    }
+
+    // =========================================================
+    // サムネイルURL
+    // =========================================================
+
+    function getThumbnailURL(episodeId) {
+      return (
+        CONFIG.THUMBNAIL_BASE +
+        encodeURIComponent(episodeId) +
+        ".jpg"
+      );
+    }
+
+    // =========================================================
+    // 画像を読み込む
+    // PNG保存のためCORSモードで読み込む
+    // =========================================================
+
+    function loadThumbnail(episodeId) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+
+        image.crossOrigin = "anonymous";
+
+        image.onload = () => {
+          if (!image.naturalWidth || !image.naturalHeight) {
+            reject(new Error("サムネイルのサイズを取得できません。"));
+            return;
+          }
+
+          resolve(image);
+        };
+
+        image.onerror = () => {
+          reject(
+            new Error(
+              "サムネイルを読み込めませんでした。画像URLまたは配信元の設定を確認してください。"
+            )
+          );
+        };
+
+        image.src = getThumbnailURL(episodeId);
+      });
+    }
+
+    // =========================================================
+    // Canvasの基本描画
+    // =========================================================
+
+    function resetCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // =========================================================
+    // 角丸矩形
+    // =========================================================
+
+    function roundedRect(ctx, x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + width - r, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+      ctx.lineTo(x + width, y + height - r);
+      ctx.quadraticCurveTo(
+        x + width, y + height,
+        x + width - r, y + height
+      );
+      ctx.lineTo(x + r, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    // =========================================================
+    // テキストを指定幅に収める
+    // =========================================================
+
+    function fitText(text, maxWidth, initialFontSize, fontWeight = "700") {
+      let fontSize = initialFontSize;
+
+      while (fontSize > 18) {
+        ctx.font = `${fontWeight} ${fontSize}px "Noto Sans JP", sans-serif`;
+
+        if (ctx.measureText(text).width <= maxWidth) {
+          break;
+        }
+
+        fontSize -= 2;
+      }
+
+      return fontSize;
+    }
+
+    // =========================================================
+    // ヘッダー
+    // 左上：番組名
+    // 右上：取得日時
+    // =========================================================
+
+    function drawHeader(episode) {
+      const size = CONFIG.IMAGE_SIZE;
+      const margin = 58;
+
+      const programName = episode.programName || "TVerランキング";
+      const acquiredAt = formatTimestamp(episode.timestamp);
+
+      const dateFontSize = 22;
+
+      ctx.save();
+
+      // 番組名
+      const maxProgramWidth = size * 0.53;
+      const programFontSize = fitText(
+        programName,
+        maxProgramWidth,
+        31,
+        "800"
+      );
+
+      ctx.font =
+        `800 ${programFontSize}px "Noto Sans JP", sans-serif`;
+      ctx.fillStyle = "#332C33";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(programName, margin, 62);
+
+      // 取得日時
+      ctx.font =
+        `500 ${dateFontSize}px "Noto Sans JP", sans-serif`;
+      ctx.fillStyle = "#817580";
+      ctx.textAlign = "right";
+      ctx.fillText(acquiredAt, size - margin, 62);
+
+      // ヘッダー下の細いライン
+      ctx.fillStyle = "#F2DCE6";
+      ctx.fillRect(margin, 108, size - margin * 2, 2);
+
+      // ライン上のアクセント
+      ctx.fillStyle = "#E86A9A";
+      ctx.fillRect(margin, 108, 76, 3);
+
+      ctx.restore();
+    }
+
+    // =========================================================
+    // 順位バッジ
+    // サムネイル左下に重ねて表示
+    // =========================================================
+
+    function drawRankBadge(episode, x, y, width, height) {
+      const rank = String(episode.rank || "").trim();
+
+      if (!rank) {
+        return;
+      }
+
+      const badgeText = `${rank}位`;
+      const badgeHeight = 66;
+      const paddingX = 24;
+      const badgeX = x + 22;
+      const badgeY = y + height - badgeHeight - 22;
+      const radius = 18;
+
+      ctx.save();
+
+      // 順位テキスト
+      ctx.font = '800 34px "Noto Sans JP", sans-serif';
+      const textWidth = ctx.measureText(badgeText).width;
+      const badgeWidth = textWidth + paddingX * 2;
+
+      // 柔らかい影
+      ctx.shadowColor = "rgba(54, 20, 39, 0.30)";
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 6;
+
+      // ピンクのグラデーション
+      const gradient = ctx.createLinearGradient(
+        badgeX,
+        badgeY,
+        badgeX + badgeWidth,
+        badgeY + badgeHeight
+      );
+
+      gradient.addColorStop(0, "#F58BCA");
+      gradient.addColorStop(1, "#E65F98");
+
+      roundedRect(
+        ctx,
+        badgeX,
+        badgeY,
+        badgeWidth,
+        badgeHeight,
+        radius
+      );
+
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // 影を文字には適用しない
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // バッジの縁に薄いハイライト
+      roundedRect(
+        ctx,
+        badgeX + 1,
+        badgeY + 1,
+        badgeWidth - 2,
+        badgeHeight - 2,
+        radius - 1
+      );
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.38)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 順位文字
+      ctx.font = '800 34px "Noto Sans JP", sans-serif';
+      ctx.fillStyle = "#FFFFFF";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.fillText(
+        badgeText,
+        badgeX + badgeWidth / 2,
+        badgeY + badgeHeight / 2 + 1
+      );
+
+      ctx.restore();
+    }
+
+    // =========================================================
+    // サムネイル描画
+    // 元画像のアスペクト比を維持し、切り取りなし
+    // =========================================================
+
+    function drawThumbnail(episode, image) {
+      const size = CONFIG.IMAGE_SIZE;
+
+      const maxWidth = size * CONFIG.THUMBNAIL_WIDTH_RATE;
+      const maxHeight = CONFIG.THUMBNAIL_MAX_HEIGHT;
+
+      const originalWidth = image.naturalWidth;
+      const originalHeight = image.naturalHeight;
+
+      // 拡大・縮小率を計算し、アスペクト比を維持
+      const scale = Math.min(
+        maxWidth / originalWidth,
+        maxHeight / originalHeight
+      );
+
+      const imageWidth = originalWidth * scale;
+      const imageHeight = originalHeight * scale;
+
+      // 横方向中央配置
+      const imageX = (size - imageWidth) / 2;
+
+      // ヘッダーとタイトルの間で上下中央配置
+      const imageAreaTop = 140;
+      const imageAreaBottom = 790;
+      const imageAreaHeight = imageAreaBottom - imageAreaTop;
+
+      const imageY =
+        imageAreaTop + (imageAreaHeight - imageHeight) / 2;
+
+      // 画像そのものは切り取らない
+      ctx.save();
+      ctx.drawImage(
+        image,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight
+      );
+      ctx.restore();
+
+      // 画像の上に順位を重ねる
+      drawRankBadge(
+        episode,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight
+      );
+
+      return {
+        x: imageX,
+        y: imageY,
+        width: imageWidth,
+        height: imageHeight
+      };
+    }
+
+    // =========================================================
+    // エピソードタイトル
+    // サムネイルの下に配置
+    // =========================================================
+
+    function drawEpisodeTitle(episode) {
+      const size = CONFIG.IMAGE_SIZE;
+      const margin = 72;
+      const maxWidth = size - margin * 2;
+
+      const title = episode.episodeTitle || "エピソードタイトル不明";
+
+      ctx.save();
+
+      // タイトル上部の区切り線
+      ctx.fillStyle = "#F2DCE6";
+      ctx.fillRect(margin, 866, size - margin * 2, 2);
+
+      // 左端のピンクアクセント
+      ctx.fillStyle = "#E86A9A";
+      ctx.fillRect(margin, 866, 76, 3);
+
+      // タイトルは最大2行
+      let fontSize = fitText(title, maxWidth, 36, "800");
+
+      ctx.font = `800 ${fontSize}px "Noto Sans JP", sans-serif`;
+      ctx.fillStyle = "#302932";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const lines = wrapText(title, maxWidth, fontSize, 2);
+      const lineHeight = fontSize * 1.42;
+      const centerY = 930;
+      const firstY = centerY - ((lines.length - 1) * lineHeight) / 2;
+
+      lines.forEach((line, index) => {
+        ctx.fillText(
+          line,
+          size / 2,
+          firstY + index * lineHeight,
+          maxWidth
+        );
+      });
+
+      ctx.restore();
+    }
+
+    // =========================================================
+    // タイトルの折り返し
+    // =========================================================
+
+    function wrapText(text, maxWidth, fontSize, maxLines = 2) {
+      ctx.font = `800 ${fontSize}px "Noto Sans JP", sans-serif`;
+
+      const chars = Array.from(String(text));
+      const lines = [];
+      let line = "";
+
+      for (const char of chars) {
+        const testLine = line + char;
+
+        if (
+          line &&
+          ctx.measureText(testLine).width > maxWidth
+        ) {
+          lines.push(line);
+          line = char;
+
+          if (lines.length >= maxLines) {
+            break;
+          }
+        } else {
+          line = testLine;
+        }
+      }
+
+      if (lines.length < maxLines && line) {
+        lines.push(line);
+      }
+
+      const consumed = lines.join("").length;
+      if (consumed < chars.length && lines.length) {
+        let last = lines[lines.length - 1];
+
+        while (
+          last.length > 0 &&
+          ctx.measureText(last + "…").width > maxWidth
+        ) {
+          last = Array.from(last).slice(0, -1).join("");
+        }
+
+        lines[lines.length - 1] = last + "…";
+      }
+
+      return lines;
+    }
+
+    // =========================================================
+    // 画像を生成
+    // =========================================================
+
+    async function renderEpisode(episode) {
+      selectedEpisode = episode;
+      saveButton.disabled = true;
+      currentImage = null;
+
+      resetCanvas();
+      drawHeader(episode);
+
+      setStatus("サムネイルを読み込んでいます…");
+
+      try {
+        const image = await loadThumbnail(episode.episodeId);
+        currentImage = image;
+
+        resetCanvas();
+        drawHeader(episode);
+        drawThumbnail(episode, image);
+        drawEpisodeTitle(episode);
+
+        saveButton.disabled = false;
+        setStatus(
+          `画像を生成しました。順位：${episode.rank || "不明"}位 / ` +
+          `取得日時：${formatTimestamp(episode.timestamp)}`
+        );
+      } catch (error) {
+        resetCanvas();
+        drawHeader(episode);
+        drawEpisodeTitle(episode);
+
+        setStatus(
+          `画像を生成できませんでした。${error.message}`
+        );
+      }
+    }
+
+    // =========================================================
+    // エピソード選択欄
+    // =========================================================
+
+    function populateEpisodeSelect(episodes) {
+      select.replaceChildren();
+
+      if (!episodes.length) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "対象データがありません";
+        select.appendChild(option);
+        select.disabled = true;
+        return;
+      }
+
+      episodes.forEach((episode, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+
+        const rankLabel = episode.rank
+          ? `${episode.rank}位`
+          : "順位不明";
+
+        const program = episode.programName || "番組名不明";
+        const title = episode.episodeTitle || "タイトル不明";
+
+        option.textContent = `${rankLabel}｜${program}｜${title}`;
+
+        select.appendChild(option);
+      });
+
+      select.disabled = false;
+      select.value = "0";
+    }
+
+    // =========================================================
+    // CSV取得
+    // =========================================================
+
+    async function fetchRankingData() {
+      reloadButton.disabled = true;
+      saveButton.disabled = true;
+      select.disabled = true;
+
+      setStatus("公開CSVを取得しています…");
+
+      try {
+        const url =
+          CONFIG.CSV_URL +
+          "&cacheBust=" +
+          Date.now();
+
+        const response = await fetch(url, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `CSVの取得に失敗しました（HTTP ${response.status}）。`
+          );
+        }
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+        const episodes = convertRowsToEpisodes(rows);
+
+        if (!episodes.length) {
+          throw new Error(
+            "CSVから有効なランキングデータを取得できませんでした。"
+          );
+        }
+
+        latestEpisodes = filterLatestEpisodes(episodes);
+
+        if (!latestEpisodes.length) {
+          throw new Error(
+            "最新取得日時のデータを特定できませんでした。"
+          );
+        }
+
+        // CSVに含まれる順位を数値順で並べる
+        latestEpisodes.sort((a, b) => {
+          const rankA = Number(a.rank);
+          const rankB = Number(b.rank);
+
+          if (Number.isFinite(rankA) && Number.isFinite(rankB)) {
+            return rankA - rankB;
+          }
+
+          return String(a.rank).localeCompare(String(b.rank), "ja");
+        });
+
+        populateEpisodeSelect(latestEpisodes);
+
+        setStatus(
+          `最新取得日時：${formatTimestamp(latestEpisodes[0].timestamp)} / ` +
+          `${latestEpisodes.length}件`
+        );
+
+        await renderEpisode(latestEpisodes[0]);
+      } catch (error) {
+        setStatus(`エラー：${error.message}`);
+        select.disabled = true;
+        saveButton.disabled = true;
+      } finally {
+        reloadButton.disabled = false;
+      }
+    }
+
+    // =========================================================
+    // PNG保存
+    // =========================================================
+
+    function savePNG() {
+      if (!selectedEpisode || !currentImage) {
+        setStatus("保存できる画像がありません。");
+        return;
+      }
+
+      try {
+        canvas.toBlob(blob => {
+          if (!blob) {
+            setStatus(
+              "PNGを作成できませんでした。画像配信元のCORS設定を確認してください。"
+            );
+            return;
+          }
+
+          const objectURL = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          const safeRank = String(selectedEpisode.rank || "unknown")
+            .replace(/[\\/:*?"<>|]/g, "_");
+
+          const safeEpisodeId = String(selectedEpisode.episodeId || "episode")
+            .replace(/[\\/:*?"<>|]/g, "_");
+
+          link.href = objectURL;
+          link.download = `TVerランキング_${safeRank}位_${safeEpisodeId}.png`;
+
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+
+          setTimeout(() => URL.revokeObjectURL(objectURL), 1000);
+
+          setStatus("PNG画像の保存を開始しました。");
+        }, "image/png");
+      } catch (error) {
+        setStatus(
+          "PNGを保存できませんでした。TVerの画像サーバーがCanvasへの画像利用を許可していない可能性があります。"
+        );
+      }
+    }
+
+    // =========================================================
+    // イベント
+    // =========================================================
+
+    select.addEventListener("change", async () => {
+      const index = Number(select.value);
+
+      if (!Number.isInteger(index) || !latestEpisodes[index]) {
+        return;
+      }
+
+      await renderEpisode(latestEpisodes[index]);
+    });
+
+    reloadButton.addEventListener("click", fetchRankingData);
+    saveButton.addEventListener("click", savePNG);
+
+    // =========================================================
+    // 初期起動
+    // =========================================================
+
+    resetCanvas();
+    fetchRankingData();
+  </script>
+</body>
+</html>
