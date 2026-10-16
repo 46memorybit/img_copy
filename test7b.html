@@ -27,8 +27,7 @@
       padding: 20px 14px 32px;
       background: linear-gradient(180deg, #fff7fa 0%, #fff 100%);
       color: var(--text);
-      font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI",
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Noto Sans JP", sans-serif;
     }
 
@@ -64,6 +63,7 @@
       box-shadow: 0 5px 24px rgb(125 59 83 / 10%);
     }
 
+    /* 画像として保存するカードも正方形 */
     #captureCard {
       position: absolute;
       inset: 0;
@@ -74,6 +74,7 @@
       background:
         radial-gradient(circle at 100% 0%, #fff0f5 0, transparent 40%),
         #fff;
+      box-sizing: border-box;
     }
 
     .card-header {
@@ -100,6 +101,7 @@
       font-size: clamp(8px, 2.1vw, 11px);
       text-align: right;
       line-height: 1.4;
+      white-space: pre-line;
     }
 
     #thumbnailFrame {
@@ -133,11 +135,12 @@
       text-align: center;
     }
 
-    #imagePlaceholder[hidden] {
+    #imagePlaceholder[hidden],
+    #rankBadge[hidden] {
       display: none;
     }
 
-    /* サムネイル左下に重ねる順位バッジ */
+    /* サムネイル左下の順位 */
     #rankBadge {
       position: absolute;
       left: 10px;
@@ -153,23 +156,6 @@
       line-height: 1.2;
       text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
       box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
-      white-space: nowrap;
-    }
-
-    /* エピソードIDは右下に表示 */
-    #episodeIdBadge {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      z-index: 2;
-      max-width: calc(100% - 110px);
-      padding: 5px 9px;
-      overflow: hidden;
-      border-radius: 5px;
-      background: rgb(30 20 25 / 78%);
-      color: #fff;
-      font-size: clamp(9px, 2.3vw, 12px);
-      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -292,14 +278,13 @@
           <div id="imagePlaceholder">サムネイルを読み込んでいます…</div>
           <img id="thumbnail" alt="エピソードのサムネイル">
           <div id="rankBadge" hidden></div>
-          <div id="episodeIdBadge" hidden></div>
         </div>
 
         <p id="episodeTitle">データを取得しています…</p>
 
         <div class="card-footer">
           <span class="brand">サクラミーツ応援</span>
-          <span id="sourceLabel">EPISODE</span>
+          <span id="sourceLabel">TVER</span>
         </div>
       </div>
     </div>
@@ -323,7 +308,6 @@
     >エピソードを開く</a>
   </main>
 
-  <!-- HTMLをPNG画像に変換 -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <script>
@@ -334,16 +318,17 @@
     // =========================================================
 
     const CONFIG = {
-      // 公開Googleスプレッドシート（TVerランキングデータ）
-      PUBLISHED_ID: "2PACX-1vTJofs8FiOCnnavLtBInpn1d6u9YiJ6kZLFDBNI8iRTL4RBJBz3PSQtMSiSKt35B0xgtv6p9zKTy-75",
+      PUBLISHED_ID:
+        "2PACX-1vTJofs8FiOCnnavLtBInpn1d6u9YiJ6kZLFDBNI8iRTL4RBJBz3PSQtMSiSKt35B0xgtv6p9zKTy-75",
+
       SHEET_GID: "91701956",
       SERIES_ID: "srx97ftk3w",
 
-      // 指定されたGitHub Pagesのサムネイル
       THUMBNAIL_TEMPLATE:
         "https://46memorybit.github.io/meets_tver_thumbnail/images/{id}.jpg",
 
-      CAPTURE_SCALE: 2
+      // 保存画像の幅・高さ
+      OUTPUT_SIZE: 1200
     };
 
     // =========================================================
@@ -356,7 +341,6 @@
     const thumbnailElement = document.getElementById("thumbnail");
     const placeholderElement = document.getElementById("imagePlaceholder");
     const rankBadge = document.getElementById("rankBadge");
-    const episodeIdBadge = document.getElementById("episodeIdBadge");
     const episodeTitleElement = document.getElementById("episodeTitle");
     const sourceLabelElement = document.getElementById("sourceLabel");
     const shareButton = document.getElementById("shareButton");
@@ -366,7 +350,6 @@
 
     let currentEpisode = null;
     let imageReady = false;
-    let currentImage = null;
 
     // =========================================================
     // 共通処理
@@ -378,9 +361,13 @@
 
     function getEpisodeId(value) {
       if (!value) return "";
-      // スプレッドシート由来のID、またはTVerエピソードURLの両方に対応
+
       const text = String(value).trim();
-      if (/^[a-zA-Z0-9_-]+$/.test(text) && !text.includes("/")) return text;
+
+      if (/^[a-zA-Z0-9_-]+$/.test(text) && !text.includes("/")) {
+        return text;
+      }
+
       try {
         const parsed = new URL(text);
         const match = parsed.pathname.match(/\/episodes\/([^/?#]+)/i);
@@ -391,17 +378,10 @@
       }
     }
 
-    function isTverEpisode(item) {
-      return Boolean(item && item.seriesId === CONFIG.SERIES_ID);
-    }
-
-    function getProgramName(item) {
-      return "サクラミーツ";
-    }
-
     function getThumbnailUrl(item) {
-      const episodeId = String(item.episodeId || "").trim();
+      const episodeId = getEpisodeId(item.episodeId);
       if (!episodeId) return "";
+
       return CONFIG.THUMBNAIL_TEMPLATE.replace(
         "{id}",
         encodeURIComponent(episodeId)
@@ -412,8 +392,6 @@
       return new Promise((resolve, reject) => {
         const img = new Image();
 
-        // Canvasに描画できるようCORSモードで読み込む
-        // 配信元がCORSを許可していない場合、この画像は失敗することがある
         img.crossOrigin = "anonymous";
 
         img.onload = () => {
@@ -450,7 +428,7 @@
     }
 
     // =========================================================
-    // 公開GoogleスプレッドシートからCSV取得
+    // CSV解析
     // =========================================================
 
     function parseCSV(text) {
@@ -461,6 +439,7 @@
 
       for (let i = 0; i < text.length; i++) {
         const ch = text[i];
+
         if (quoted) {
           if (ch === '"') {
             if (text[i + 1] === '"') {
@@ -479,7 +458,11 @@
           field = "";
         } else if (ch === "\n") {
           row.push(field.replace(/\r$/, ""));
-          if (row.some(value => value.trim() !== "")) rows.push(row);
+
+          if (row.some(value => value.trim() !== "")) {
+            rows.push(row);
+          }
+
           row = [];
           field = "";
         } else {
@@ -489,10 +472,18 @@
 
       if (field.length || row.length) {
         row.push(field.replace(/\r$/, ""));
-        if (row.some(value => value.trim() !== "")) rows.push(row);
+
+        if (row.some(value => value.trim() !== "")) {
+          rows.push(row);
+        }
       }
+
       return rows;
     }
+
+    // =========================================================
+    // 公開スプレッドシートから最新データを取得
+    // =========================================================
 
     async function fetchEpisodes() {
       setStatus("公開Googleスプレッドシートからデータを取得しています…");
@@ -509,18 +500,22 @@
       });
 
       if (!response.ok) {
-        throw new Error("公開スプレッドシートの取得に失敗しました（HTTP " +
-          response.status + "）");
+        throw new Error(
+          "公開スプレッドシートの取得に失敗しました（HTTP " +
+          response.status + "）"
+        );
       }
 
       const csvText = await response.text();
       const rows = parseCSV(csvText);
 
       if (rows.length < 2) {
-        throw new Error("公開CSVにデータがありません。公開設定とシートIDを確認してください。");
+        throw new Error(
+          "公開CSVにデータがありません。公開設定とシートIDを確認してください。"
+        );
       }
 
-      // 列順（0始まり）:
+      // 列順:
       // timestamp=0, rankingType=1, rankingId=2, rank=3,
       // episodeId=4, seriesId=5, programName=6, episodeTitle=7
       const records = rows.slice(1).map(row => ({
@@ -539,24 +534,31 @@
       );
 
       if (records.length === 0) {
-        throw new Error("公開CSVにサクラミーツのエピソードが見つかりませんでした。");
+        throw new Error(
+          "公開CSVにサクラミーツのエピソードが見つかりませんでした。"
+        );
       }
 
-      // 取得日時が最新のスナップショットを優先し、その中で順位が高い項目を表示。
+      // 取得日時が最新のスナップショットを選ぶ
       const latestTimestamp = records.reduce((latest, item) => {
         const current = Date.parse(item.timestamp);
         const previous = Date.parse(latest);
+
         return Number.isFinite(current) &&
           (!Number.isFinite(previous) || current > previous)
           ? item.timestamp
           : latest;
       }, records[0].timestamp);
 
-      let latestRecords = records.filter(item => item.timestamp === latestTimestamp);
+      let latestRecords = records.filter(
+        item => item.timestamp === latestTimestamp
+      );
+
       latestRecords.sort((a, b) => a.rank - b.rank);
 
       // 同一エピソードの重複を除外
       const seen = new Set();
+
       latestRecords = latestRecords.filter(item => {
         if (seen.has(item.episodeId)) return false;
         seen.add(item.episodeId);
@@ -576,50 +578,35 @@
 
     async function renderEpisode(item) {
       currentEpisode = item;
-      currentImage = null;
       imageReady = false;
 
       shareButton.disabled = true;
       saveButton.disabled = true;
 
-      programNameElement.textContent = getProgramName(item);
+      programNameElement.textContent = "サクラミーツ";
       episodeTitleElement.textContent = item.title || "タイトル不明";
-      sourceLabelElement.textContent = isTverEpisode(item) ? "TVER" : "RADIKO";
+      sourceLabelElement.textContent = "TVER";
 
       updateCreatedAt();
 
-      const episodeId = getEpisodeId(item.episodeId);
+      // 順位をサムネイル左下に表示
+      const rank = Number(item.rank);
 
-      // 順位をサムネイル左下に重ねて表示
-      if (Number.isFinite(Number(item.rank)) && Number(item.rank) > 0 && Number(item.rank) < 999999) {
-        rankBadge.textContent = Number(item.rank) + "位";
-        rankBadge.hidden = false;
+      if (Number.isFinite(rank) && rank > 0 && rank < 999999) {
+        rankBadge.textContent = rank + "位";
       } else {
         rankBadge.textContent = "順位不明";
-        rankBadge.hidden = false;
       }
 
-      // エピソードIDはサムネイル右下に表示
+      rankBadge.hidden = false;
+
+      // エピソードへのリンク
+      const episodeId = getEpisodeId(item.episodeId);
+
       if (episodeId) {
-        episodeIdBadge.textContent = "ID: " + episodeId;
-        episodeIdBadge.hidden = false;
-      } else {
-        episodeIdBadge.hidden = true;
-      }
-
-      if (item.episodeId) {
-        try {
-          const parsed = new URL("https://tver.jp/episodes/" + encodeURIComponent(item.episodeId));
-
-          if (parsed.protocol === "https:" || parsed.protocol === "http:") {
-            episodeLink.href = parsed.href;
-            episodeLink.hidden = false;
-          } else {
-            episodeLink.hidden = true;
-          }
-        } catch (error) {
-          episodeLink.hidden = true;
-        }
+        episodeLink.href =
+          "https://tver.jp/episodes/" + encodeURIComponent(episodeId);
+        episodeLink.hidden = false;
       } else {
         episodeLink.hidden = true;
       }
@@ -636,40 +623,42 @@
         return;
       }
 
-      let loadedImage;
       try {
-        loadedImage = await loadImage(thumbnailUrl);
+        const loadedImage = await loadImage(thumbnailUrl);
+
+        thumbnailElement.src = loadedImage.src;
+        placeholderElement.hidden = true;
+
+        imageReady = true;
+        shareButton.disabled = false;
+        saveButton.disabled = false;
+
+        setStatus(
+          "サムネイルを表示しました。\n" +
+          "順位：" + (
+            Number.isFinite(rank) && rank > 0 && rank < 999999
+              ? rank + "位"
+              : "不明"
+          ) +
+          "\n保存画像：1200 × 1200 px"
+        );
       } catch (error) {
         placeholderElement.textContent = "サムネイルを取得できませんでした";
+
         setStatus(
           "指定されたサムネイルURLから画像を取得できませんでした。\n" +
           thumbnailUrl + "\n" + error.message +
           "\nGitHub Pages上に画像が存在するか確認してください。"
         );
-        return;
       }
-
-      currentImage = loadedImage;
-      thumbnailElement.src = loadedImage.src;
-      placeholderElement.hidden = true;
-
-      imageReady = true;
-      shareButton.disabled = false;
-      saveButton.disabled = false;
-
-      setStatus(
-        "サムネイルを表示しました。\n" +
-        "エピソードID：" + (episodeId || "なし") + "\n" +
-        "画像URL：" + thumbnailUrl
-      );
     }
 
     // =========================================================
-    // キャプチャ
+    // 画像生成
     // =========================================================
 
     async function createImageBlob() {
-      if (!currentEpisode || !imageReady || !currentImage) {
+      if (!currentEpisode || !imageReady) {
         throw new Error("画像の準備が完了していません");
       }
 
@@ -677,14 +666,16 @@
         throw new Error("画像生成ライブラリを読み込めませんでした");
       }
 
-      // フォント・画像の描画を待機
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
 
-      const canvas = await html2canvas(captureCard, {
+      const SIZE = CONFIG.OUTPUT_SIZE;
+
+      // 表示中の正方形カード全体をキャプチャ
+      const sourceCanvas = await html2canvas(captureCard, {
         backgroundColor: "#ffffff",
-        scale: CONFIG.CAPTURE_SCALE,
+        scale: 2,
         useCORS: true,
         allowTaint: false,
         logging: false,
@@ -692,6 +683,34 @@
         width: captureCard.clientWidth,
         height: captureCard.clientHeight
       });
+
+      // 必ず1200×1200のPNGキャンバスに出力
+      const canvas = document.createElement("canvas");
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        throw new Error("画像キャンバスを作成できませんでした");
+      }
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, SIZE, SIZE);
+
+      // 縦横比を維持して中央に配置
+      // カードが正方形なら余白なしで全面に描画される
+      const scale = Math.min(
+        SIZE / sourceCanvas.width,
+        SIZE / sourceCanvas.height
+      );
+
+      const width = sourceCanvas.width * scale;
+      const height = sourceCanvas.height * scale;
+      const x = (SIZE - width) / 2;
+      const y = (SIZE - height) / 2;
+
+      ctx.drawImage(sourceCanvas, x, y, width, height);
 
       return new Promise((resolve, reject) => {
         canvas.toBlob(blob => {
@@ -709,8 +728,7 @@
         ? getEpisodeId(currentEpisode.episodeId)
         : "";
 
-      const safeId = episodeId || "episode";
-      return "sakurameets-" + safeId + ".png";
+      return "sakurameets-" + (episodeId || "episode") + ".png";
     }
 
     // =========================================================
@@ -719,7 +737,7 @@
 
     saveButton.addEventListener("click", async () => {
       saveButton.disabled = true;
-      setStatus("PNG画像を作成しています…");
+      setStatus("1200 × 1200 pxのPNG画像を作成しています…");
 
       try {
         const blob = await createImageBlob();
@@ -735,9 +753,10 @@
 
         setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
 
-        setStatus("PNG画像を保存しました。");
+        setStatus("PNG画像を保存しました。\nサイズ：1200 × 1200 px");
       } catch (error) {
         console.error(error);
+
         setStatus(
           "画像の保存に失敗しました。\n" +
           error.message +
@@ -754,10 +773,11 @@
 
     shareButton.addEventListener("click", async () => {
       shareButton.disabled = true;
-      setStatus("共有用の画像を作成しています…");
+      setStatus("共有用の正方形画像を作成しています…");
 
       try {
         const blob = await createImageBlob();
+
         const file = new File(
           [blob],
           makeFileName(),
@@ -776,12 +796,13 @@
           navigator.canShare({ files: [file] })
         ) {
           await navigator.share(shareData);
+
           setStatus(
             "共有画面を開きました。\n" +
             "共有先でXを選択してください。"
           );
         } else {
-          // ファイル共有非対応環境ではPNGを保存する
+          // ファイル共有に非対応の場合はPNGを保存
           const objectUrl = URL.createObjectURL(blob);
           const anchor = document.createElement("a");
 
@@ -795,16 +816,16 @@
           setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
 
           setStatus(
-            "このブラウザでは画像のWeb Share APIに対応していません。\n" +
-            "画像を保存しました。Xの投稿画面で添付してください。"
+            "このブラウザでは画像共有に対応していません。\n" +
+            "正方形の画像を保存しました。Xの投稿画面で添付してください。"
           );
         }
       } catch (error) {
-        // ユーザーが共有シートを閉じた場合もここに入ることがある
         if (error.name === "AbortError") {
           setStatus("共有をキャンセルしました。");
         } else {
           console.error(error);
+
           setStatus(
             "共有に失敗しました。\n" +
             error.message +
@@ -826,8 +847,10 @@
         await renderEpisode(item);
       } catch (error) {
         console.error(error);
+
         placeholderElement.hidden = false;
         placeholderElement.textContent = "データを取得できませんでした";
+
         setStatus(
           "エラー：" + error.message +
           "\n公開CSVのURL、公開設定、通信状態を確認してください。"
