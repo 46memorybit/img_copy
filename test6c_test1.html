@@ -1,0 +1,1214 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fde8ef">
+  <meta name="description" content="サクラミーツとミーツメンバーの出演番組。TVerランキング通知">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="サクラミーツ">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <title>サクラミーツ</title>
+
+  <style>
+    :root {
+      --sakura: #e86a9a;
+      --sakura-deep: #c94d7c;
+      --sakura-soft: #f4a4c0;
+      --sakura-pale: #fde8ef;
+      --ink: #2a2430;
+      --muted: #7d727a;
+      --paper: rgba(255, 252, 250, .9);
+      --line: rgba(201, 77, 124, .16);
+      --shadow: 0 16px 40px rgba(90, 40, 70, .1);
+      --display: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+      --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(244, 164, 192, .38), transparent 34%),
+        radial-gradient(circle at 100% 8%, rgba(232, 106, 154, .14), transparent 28%),
+        linear-gradient(165deg, #fffafc 0%, #fdf3f7 48%, #f7eef3 100%);
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    button, input { font-family: inherit; }
+    a { color: inherit; }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: max(14px, env(safe-area-inset-top)) 20px 14px;
+      background: rgba(255, 250, 252, .78);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .header-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mark {
+      margin: 0 0 4px;
+      color: var(--sakura-deep);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+
+    .app-title {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(30px, 5vw, 42px);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: .04em;
+    }
+
+    .app-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    .header-note {
+      margin: 0;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 252, 250, .8);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 22px 16px 28px;
+    }
+
+    .page.active { display: block; }
+    .section-label { margin: 0 0 14px; }
+    .status { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+
+    .loading, .error {
+      padding: 36px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .error {
+      color: var(--sakura-deep);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .episode-list { display: grid; gap: 12px; }
+
+    .episode {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .episode:active { transform: scale(.985); }
+
+    .thumb-wrap {
+      flex: 0 0 168px;
+      width: 168px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f6eef2;
+    }
+
+    .thumbnail {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      background: linear-gradient(160deg, #fde8ef, #f7d5e2);
+    }
+
+    .episode-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+    }
+
+    .source {
+      align-self: flex-start;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--sakura-pale);
+      color: var(--sakura-deep);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .episode-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
+
+    .episode-link {
+      color: var(--sakura-deep);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .settings-header { margin-bottom: 16px; }
+
+    .settings-title {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(32px, 7vw, 48px);
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .settings-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .settings-card {
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .settings-section { padding: 20px 18px; }
+
+    .settings-section-title {
+      margin: 0 0 4px;
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .settings-section-description {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .notification-setting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .notification-title { margin: 0; font-size: 14px; font-weight: 700; }
+    .notification-status { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .notification-actions { display: flex; flex-direction: column; gap: 8px; }
+
+    .notification-button {
+      min-width: 132px;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e86a9a, #d95b8c);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(217, 91, 140, .22);
+    }
+
+    .notification-button:disabled { opacity: .5; box-shadow: none; cursor: default; }
+
+    .notification-button.allowed {
+      background: rgba(232, 106, 154, .1);
+      color: var(--muted);
+      box-shadow: none;
+    }
+
+    .notification-result {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .notification-result.show { display: block; }
+    .notification-result.success { background: rgba(100, 190, 130, .12); color: #3f8d58; }
+    .notification-result.error { background: rgba(232, 106, 154, .1); color: var(--sakura-deep); }
+    .settings-divider { height: 1px; background: var(--line); }
+    .topic-group + .topic-group { margin-top: 18px; }
+
+    .topic-group-label {
+      margin: 0 0 8px;
+      color: var(--sakura-deep);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+
+    .topic-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .topic-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(201, 77, 124, .1);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .62);
+    }
+
+    .topic-name { margin: 0; font-size: 14px; font-weight: 700; }
+    .topic-note { margin: 3px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+    .switch { position: relative; flex: 0 0 auto; width: 48px; height: 28px; }
+    .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+    .switch-ui {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: rgba(122, 111, 120, .25);
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+
+    .switch-ui::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(80, 40, 60, .18);
+      transition: transform .2s ease;
+    }
+
+    .switch input:checked + .switch-ui { background: linear-gradient(135deg, #e86a9a, #d95b8c); }
+    .switch input:checked + .switch-ui::after { transform: translateX(20px); }
+    .switch input:disabled + .switch-ui { opacity: .45; cursor: default; }
+
+    .app-info { padding: 18px; text-align: center; }
+    .app-info-name { margin: 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .app-info-version { margin: 5px 0 0; color: #a898a2; font-size: 11px; line-height: 1.6; }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 200;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255, 250, 252, .9);
+      border-top: 1px solid var(--line);
+    }
+
+    .bottom-nav-inner {
+      max-width: 420px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      cursor: pointer;
+    }
+
+    .bottom-nav-item.active { color: var(--sakura-deep); background: rgba(232, 106, 154, .12); }
+
+    .bottom-nav-icon {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (min-width: 860px) {
+      .episode-list { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 390px) {
+      .header-note { display: none; }
+      .thumb-wrap { flex-basis: 128px; width: 128px; }
+      .episode-title { font-size: 13px; }
+      .notification-setting { align-items: stretch; flex-direction: column; }
+      .notification-button { width: 100%; }
+    }
+
+    @media (max-width: 768px) {
+      .header, .bottom-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div>
+        <p class="mark">SAKURAZAKA46</p>
+        <h1 class="app-title">サクラミーツ</h1>
+        <p class="app-subtitle">サクラミーツとミーツメンバーの出演番組</p>
+      </div>
+      <p class="header-note">非公式</p>
+    </div>
+  </header>
+
+  <main id="homePage" class="page active">
+    <div class="section-label">
+      <p class="mark">出演</p>
+      <div id="status" class="status">最新エピソードを読み込んでいます…</div>
+    </div>
+    <div id="episodeList" class="episode-list">
+      <div class="loading">読み込み中</div>
+    </div>
+  </main>
+
+  <main id="settingsPage" class="page">
+    <div class="settings-header">
+      <p class="mark">設定</p>
+      <h2 class="settings-title">通知</h2>
+      <p class="settings-subtitle">受け取る種類だけオンにできます。</p>
+    </div>
+
+    <section class="settings-card">
+      <div class="settings-section">
+        <h3 class="settings-section-title">この端末</h3>
+        <p class="settings-section-description">
+          ブラウザの通知を許可したうえで、種類ごとにオンオフできます。
+          iPhone はホーム画面に追加したあとだけ受け取れます。
+        </p>
+        <div class="notification-setting">
+          <div>
+            <p class="notification-title">通知の受け取り</p>
+            <p id="notificationStatus" class="notification-status">通知の状態を確認しています…</p>
+          </div>
+          <div class="notification-actions">
+            <button id="notificationButton" class="notification-button" type="button">通知を許可する</button>
+            <button id="unsubscribeButton" class="notification-button allowed" type="button" hidden>通知を解除する</button>
+          </div>
+        </div>
+        <div id="notificationResult" class="notification-result"></div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <div class="settings-section">
+        <h3 class="settings-section-title">受け取る通知</h3>
+        <p class="settings-section-description">オフにしたものは、この端末には届きません。</p>
+
+        <div class="topic-group">
+          <p class="topic-group-label">サクラミーツ</p>
+          <div class="topic-list">
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">TVerランキング</span>
+                <span class="topic-note">ランキングに動いたとき。</span>
+              </span>
+              <span class="switch">
+                <input id="topicRanking" type="checkbox" data-topic="ranking">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">みんなで追いミーツ</span>
+                <span class="topic-note">木曜の追いかけタイム。</span>
+              </span>
+              <span class="switch">
+                <input id="topicOimeets" type="checkbox" data-topic="oimeets">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="topic-group">
+          <p class="topic-group-label">メンバー</p>
+          <div class="topic-list">
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">大沼晶保ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="onuma">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">小島凪紗ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="kojima">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">谷口愛季ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="taniguchi">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">中嶋優月ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="nakashima">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">佐藤愛桜ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="sato">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+
+            <label class="topic-row">
+              <span>
+                <span class="topic-name">山田桃実ちゃん関連</span>
+                <span class="topic-note">関連情報があったとき。</span>
+              </span>
+              <span class="switch">
+                <input type="checkbox" data-topic="yamada">
+                <span class="switch-ui"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <div class="app-info">
+        <p class="app-info-name">サクラミーツ</p>
+        <p class="app-info-version">非公式の出演番組案内です。</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="メインナビゲーション">
+    <div class="bottom-nav-inner">
+      <button class="bottom-nav-item active" type="button" data-page="home" aria-label="ホーム" aria-current="page">
+        <svg class="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.5L12 3l9 7.5"></path>
+          <path d="M5.5 9.5V21h13V9.5"></path>
+          <path d="M9.5 21v-6h5v6"></path>
+        </svg>
+        <span>ホーム</span>
+      </button>
+
+      <button class="bottom-nav-item" type="button" data-page="settings" aria-label="設定">
+        <svg class="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.42 1.42-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2v-.48a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.42-1.42.06-.06A1.7 1.7 0 0 0 9.4 15 1.7 1.7 0 0 0 7.84 13.97H7v-2h.84A1.7 1.7 0 0 0 9.4 11 1.7 1.7 0 0 0 9.06 9.12L9 9.06l1.42-1.42.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 13.4 6.48V6h2v.48A1.7 1.7 0 0 0 16.43 8a1.7 1.7 0 0 0 1.88-.34l.06-.06 1.42 1.42-.06.06A1.7 1.7 0 0 0 19.4 11a1.7 1.7 0 0 0 1.56 1.03H21v2h-.04A1.7 1.7 0 0 0 19.4 15Z"></path>
+        </svg>
+        <span>設定</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    // =========================================================
+    // 設定
+    // =========================================================
+
+    const API_URL = "https://api.konnagi.com/meets-app-tver&radiko";
+    const PUSH_API_URL = "https://sakurameets-push.aknhry819.workers.dev";
+
+    // 画像プロキシWorkerのURLに変更してください。
+    // 例: https://your-image-proxy.your-subdomain.workers.dev/image?url=
+    // Worker未設定の場合、一覧表示はそのまま動作します。
+    const IMAGE_PROXY_URL = "";
+
+    const TOPIC_STORAGE_KEY = "web_push_topics";
+
+    const TOPIC_DEFS = [
+      { id: "ranking", label: "TVerランキング", group: "show", defaultOn: true },
+      { id: "oimeets", label: "みんなで追いミーツ", group: "show", defaultOn: true },
+      { id: "onuma", label: "大沼晶保ちゃん関連", group: "member", defaultOn: false },
+      { id: "kojima", label: "小島凪紗ちゃん関連", group: "member", defaultOn: false },
+      { id: "taniguchi", label: "谷口愛季ちゃん関連", group: "member", defaultOn: false },
+      { id: "nakashima", label: "中嶋優月ちゃん関連", group: "member", defaultOn: false },
+      { id: "sato", label: "佐藤愛桜ちゃん関連", group: "member", defaultOn: false },
+      { id: "yamada", label: "山田桃実ちゃん関連", group: "member", defaultOn: false }
+    ];
+
+    const episodeList = document.getElementById("episodeList");
+    const status = document.getElementById("status");
+    const homePage = document.getElementById("homePage");
+    const settingsPage = document.getElementById("settingsPage");
+    const bottomNavItems = document.querySelectorAll(".bottom-nav-item");
+    const notificationButton = document.getElementById("notificationButton");
+    const notificationStatus = document.getElementById("notificationStatus");
+    const notificationResult = document.getElementById("notificationResult");
+    const unsubscribeButton = document.getElementById("unsubscribeButton");
+    const topicInputs = document.querySelectorAll("[data-topic]");
+
+    // =========================================================
+    // トピック設定
+    // =========================================================
+
+    function defaultTopics() {
+      const topics = {};
+      TOPIC_DEFS.forEach((topic) => {
+        topics[topic.id] = topic.defaultOn;
+      });
+      return topics;
+    }
+
+    function readTopics() {
+      const topics = defaultTopics();
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(TOPIC_STORAGE_KEY) || "null");
+
+        if (saved && typeof saved === "object") {
+          if (!("ranking" in saved) && "surge" in saved) {
+            saved.ranking = saved.surge;
+          }
+          if (!("sato" in saved) && "satoao" in saved) {
+            saved.sato = saved.satoao;
+          }
+
+          TOPIC_DEFS.forEach((topic) => {
+            if (topic.id in saved) {
+              topics[topic.id] = saved[topic.id] !== false && saved[topic.id] !== 0;
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return topics;
+    }
+
+    function writeTopics(topics) {
+      localStorage.setItem(TOPIC_STORAGE_KEY, JSON.stringify(topics));
+    }
+
+    function currentTopics() {
+      const topics = defaultTopics();
+      topicInputs.forEach((input) => {
+        topics[input.dataset.topic] = input.checked;
+      });
+      return topics;
+    }
+
+    function syncTopicInputs(topics, enabled) {
+      topicInputs.forEach((input) => {
+        input.checked = Boolean(topics && topics[input.dataset.topic]);
+        input.disabled = !enabled;
+      });
+    }
+
+    function topicSummary(topics) {
+      return TOPIC_DEFS
+        .filter((topic) => topics[topic.id])
+        .map((topic) => topic.label);
+    }
+
+    // =========================================================
+    // エピソード表示
+    // =========================================================
+
+    function getLinkMessage(url) {
+      try {
+        const hostname = new URL(url).hostname.toLowerCase();
+
+        if (hostname === "tver.jp" || hostname.endsWith(".tver.jp")) {
+          return "TVerで見る";
+        }
+        if (hostname === "radiko.jp" || hostname.endsWith(".radiko.jp")) {
+          return "radikoで聴く";
+        }
+
+        return "開く";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function sourceLabel(url) {
+      try {
+        const hostname = new URL(url).hostname.toLowerCase();
+
+        if (hostname === "tver.jp" || hostname.endsWith(".tver.jp")) {
+          return "TVer";
+        }
+        if (hostname === "radiko.jp" || hostname.endsWith(".radiko.jp")) {
+          return "radiko";
+        }
+      } catch (error) {
+        return "";
+      }
+
+      return "";
+    }
+
+    function showListError(message) {
+      status.textContent = message;
+      episodeList.replaceChildren();
+
+      const box = document.createElement("div");
+      box.className = "error";
+      box.textContent = message;
+
+      episodeList.appendChild(box);
+    }
+
+    async function loadEpisodes() {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 12000);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "GET",
+          cache: "no-store",
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("APIのレスポンス形式が正しくありません");
+        }
+
+        renderEpisodes(data);
+      } catch (error) {
+        console.error(error);
+
+        showListError(
+          error.name === "AbortError"
+            ? "エピソードの取得がタイムアウトしました。"
+            : "エピソード情報を取得できませんでした。"
+        );
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    // 一覧表示は今までどおり画像URLを直接使用します。
+    // ここではcrossOriginを設定しないため、表示動作を変更しません。
+    function renderEpisodes(episodes) {
+      episodeList.replaceChildren();
+
+      if (!episodes.length) {
+        showListError("現在表示できるエピソードがありません。");
+        return;
+      }
+
+      status.textContent = episodes.length + "件のエピソード";
+
+      episodes.forEach((episode) => {
+        const title = episode.title || "タイトルなし";
+        const episodeURL = episode.episodeURL || "#";
+        const linkMessage = getLinkMessage(episodeURL);
+        const source = sourceLabel(episodeURL);
+
+        const link = document.createElement("a");
+        link.className = "episode";
+        link.href = episodeURL;
+        link.target = "_blank";
+        link.rel = "noopener";
+
+        const thumbWrap = document.createElement("span");
+        thumbWrap.className = "thumb-wrap";
+
+        const image = document.createElement("img");
+        image.className = "thumbnail";
+        image.alt = "";
+        image.loading = "lazy";
+        image.decoding = "async";
+
+        if (episode.horizontal_thumbnail_path) {
+          image.src = episode.horizontal_thumbnail_path;
+        }
+
+        thumbWrap.appendChild(image);
+
+        const content = document.createElement("span");
+        content.className = "episode-content";
+
+        if (source) {
+          const badge = document.createElement("span");
+          badge.className = "source";
+          badge.textContent = source;
+          content.appendChild(badge);
+        }
+
+        const heading = document.createElement("span");
+        heading.className = "episode-title";
+        heading.textContent = title;
+        content.appendChild(heading);
+
+        if (linkMessage) {
+          const action = document.createElement("span");
+          action.className = "episode-link";
+          action.textContent = linkMessage + " ↗";
+          content.appendChild(action);
+        }
+
+        link.append(thumbWrap, content);
+        episodeList.appendChild(link);
+      });
+    }
+
+    // =========================================================
+    // 画像プロキシ
+    // =========================================================
+
+    function getImageProxyUrl(originalUrl) {
+      if (!IMAGE_PROXY_URL) {
+        throw new Error(
+          "画像プロキシが未設定です。IMAGE_PROXY_URLにWorkerのURLを設定してください。"
+        );
+      }
+
+      const parsed = new URL(originalUrl);
+
+      if (parsed.protocol !== "https:") {
+        throw new Error("HTTPSの画像URLのみ使用できます。");
+      }
+
+      const allowedHosts = [
+        "image-cdn.tver.jp",
+        "statics.tver.jp",
+        "www.allnightnippon.com",
+        "allnightnippon.com"
+      ];
+
+      if (!allowedHosts.includes(parsed.hostname.toLowerCase())) {
+        throw new Error("許可されていない画像ホストです: " + parsed.hostname);
+      }
+
+      return IMAGE_PROXY_URL + encodeURIComponent(originalUrl);
+    }
+
+    // WorkerからCORS許可済みの画像を取得してBlobにします。
+    async function fetchImageBlob(originalUrl) {
+      const proxyUrl = getImageProxyUrl(originalUrl);
+
+      const response = await fetch(proxyUrl, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("画像取得に失敗しました (HTTP " + response.status + ")");
+      }
+
+      const blob = await response.blob();
+
+      if (!blob.type.startsWith("image/")) {
+        throw new Error("取得したデータが画像ではありません。");
+      }
+
+      return blob;
+    }
+
+    // =========================================================
+    // ページ切り替え
+    // =========================================================
+
+    function switchPage(page) {
+      const isHome = page === "home";
+
+      homePage.classList.toggle("active", isHome);
+      settingsPage.classList.toggle("active", !isHome);
+
+      bottomNavItems.forEach((item) => {
+        const active = item.dataset.page === page;
+        item.classList.toggle("active", active);
+
+        if (active) {
+          item.setAttribute("aria-current", "page");
+        } else {
+          item.removeAttribute("aria-current");
+        }
+      });
+
+      if (!isHome) {
+        updateNotificationStatus().catch(console.error);
+      }
+    }
+
+    // =========================================================
+    // 通知設定
+    // =========================================================
+
+    function showNotificationResult(message, kind) {
+      notificationResult.textContent = message;
+      notificationResult.className = "notification-result show " + (kind || "");
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const raw = atob(base64);
+      const output = new Uint8Array(raw.length);
+
+      for (let i = 0; i < raw.length; i += 1) {
+        output[i] = raw.charCodeAt(i);
+      }
+
+      return output;
+    }
+
+    async function updateNotificationStatus() {
+      const savedTopics = readTopics();
+
+      if (
+        !("Notification" in window) ||
+        !("serviceWorker" in navigator) ||
+        !("PushManager" in window)
+      ) {
+        notificationStatus.textContent = "このブラウザは通知に対応していません。";
+        notificationButton.disabled = true;
+        unsubscribeButton.hidden = true;
+        syncTopicInputs(savedTopics, false);
+        return;
+      }
+
+      const permission = Notification.permission;
+
+      if (permission === "denied") {
+        notificationStatus.textContent =
+          "通知がブロックされています。ブラウザの設定から許可してください。";
+
+        notificationButton.hidden = false;
+        notificationButton.disabled = true;
+        unsubscribeButton.hidden = true;
+        syncTopicInputs(savedTopics, false);
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      const enabled = Boolean(subscription) && permission === "granted";
+
+      notificationButton.hidden = enabled;
+      notificationButton.disabled = false;
+      unsubscribeButton.hidden = !enabled;
+
+      notificationStatus.textContent = enabled
+        ? "この端末で受け取れます。"
+        : "まだこの端末では受け取れません。";
+
+      syncTopicInputs(savedTopics, true);
+    }
+
+    async function ensureSubscription(topics) {
+      if (!PUSH_API_URL) {
+        throw new Error("PUSH_API_URL が設定されていません。");
+      }
+
+      const permission = await Notification.requestPermission();
+
+      if (permission !== "granted") {
+        throw new Error("通知が許可されませんでした。");
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+
+      const keyResponse = await fetch(
+        PUSH_API_URL + "/vapid-public-key",
+        { cache: "no-store" }
+      );
+
+      if (!keyResponse.ok) {
+        throw new Error("公開鍵を取得できませんでした。");
+      }
+
+      const keyJson = await keyResponse.json();
+      const vapidPublicKey = keyJson.publicKey;
+
+      if (!vapidPublicKey) {
+        throw new Error("公開鍵が空です。");
+      }
+
+      let subscription = await registration.pushManager.getSubscription();
+
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        });
+      }
+
+      const saveResponse = await fetch(PUSH_API_URL + "/subscribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ subscription, topics })
+      });
+
+      if (!saveResponse.ok) {
+        throw new Error("購読を保存できませんでした。");
+      }
+
+      const saved = await saveResponse.json();
+      return saved.topics || topics;
+    }
+
+    async function saveTopicPreference(topics) {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+
+      if (!subscription) {
+        return ensureSubscription(topics);
+      }
+
+      const response = await fetch(PUSH_API_URL + "/preferences", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          endpoint: subscription.endpoint,
+          topics
+        })
+      });
+
+      if (!response.ok) {
+        return ensureSubscription(topics);
+      }
+
+      const saved = await response.json();
+      return saved.topics || topics;
+    }
+
+    async function subscribeToPush() {
+      notificationButton.disabled = true;
+
+      try {
+        const topics = await ensureSubscription(currentTopics());
+
+        writeTopics(topics);
+        syncTopicInputs(topics, true);
+
+        showNotificationResult("通知を受け取れるようにしました。", "success");
+        await updateNotificationStatus();
+      } catch (error) {
+        console.error(error);
+
+        showNotificationResult(
+          error.message || "通知を設定できませんでした。",
+          "error"
+        );
+      } finally {
+        notificationButton.disabled = false;
+      }
+    }
+
+    async function unsubscribeFromPush() {
+      unsubscribeButton.disabled = true;
+
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+          const response = await fetch(PUSH_API_URL + "/unsubscribe", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ endpoint: subscription.endpoint })
+          });
+
+          if (!response.ok) {
+            throw new Error("サーバー側の通知解除に失敗しました。");
+          }
+
+          await subscription.unsubscribe();
+        }
+
+        showNotificationResult("この端末の通知を解除しました。", "success");
+        await updateNotificationStatus();
+      } catch (error) {
+        console.error(error);
+        showNotificationResult(error.message || "解除できませんでした。", "error");
+      } finally {
+        unsubscribeButton.disabled = false;
+      }
+    }
+
+    // =========================================================
+    // イベント
+    // =========================================================
+
+    bottomNavItems.forEach((item) => {
+      item.addEventListener("click", () => switchPage(item.dataset.page));
+    });
+
+    notificationButton.addEventListener("click", subscribeToPush);
+    unsubscribeButton.addEventListener("click", unsubscribeFromPush);
+
+    topicInputs.forEach((input) => {
+      input.addEventListener("change", async () => {
+        const topics = currentTopics();
+
+        topicInputs.forEach((item) => {
+          item.disabled = true;
+        });
+
+        try {
+          const saved = await saveTopicPreference(topics);
+
+          writeTopics(saved);
+          syncTopicInputs(saved, true);
+
+          const labels = topicSummary(saved);
+
+          showNotificationResult(
+            labels.length
+              ? labels.join("、") + " を受け取ります。"
+              : "すべての通知をオフにしました。",
+            "success"
+          );
+        } catch (error) {
+          console.error(error);
+
+          showNotificationResult(
+            error.message || "設定を保存できませんでした。",
+            "error"
+          );
+
+          syncTopicInputs(readTopics(), true);
+        }
+      });
+    });
+
+    // Service Worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js")
+        .catch((error) => console.error(error));
+    }
+
+    // 初期化
+    syncTopicInputs(readTopics(), true);
+    loadEpisodes();
+
+    updateNotificationStatus().catch((error) => {
+      console.error(error);
+      notificationStatus.textContent = "通知の状態を確認できませんでした。";
+    });
+
+    // =========================================================
+    // 画像取得関数
+    // =========================================================
+    // PNG化する処理から次の関数を呼び出してください。
+    //
+    // 例:
+    // const blob = await fetchImageBlob(
+    //   "https://image-cdn.tver.jp/.../thumbnail.jpg"
+    // );
+    //
+    // 注意:
+    // このHTMLには現在、PNG保存ボタンやCanvas生成処理はありません。
+    // fetchImageBlob() はその機能を追加するときに利用できます。
+  </script>
+</body>
+</html>
