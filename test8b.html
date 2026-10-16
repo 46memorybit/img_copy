@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6b6cf">
   <title>TVerランキング画像メーカー</title>
-
   <style>
     :root {
       --main: #e86a9a;
@@ -13,11 +12,9 @@
       --text: #333;
       --border: #f0dce4;
     }
-
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       padding: 16px;
@@ -27,32 +24,27 @@
         -apple-system, BlinkMacSystemFont, "Segoe UI",
         "Noto Sans JP", sans-serif;
     }
-
     .container {
       width: 100%;
       max-width: 680px;
       margin: 0 auto;
     }
-
     h1 {
       margin: 0 0 16px;
       color: var(--main);
       font-size: 22px;
     }
-
     .controls {
       display: grid;
       gap: 12px;
       margin-bottom: 16px;
     }
-
     label {
       display: block;
       margin-bottom: 6px;
       font-size: 13px;
       font-weight: 700;
     }
-
     select {
       width: 100%;
       padding: 12px;
@@ -62,7 +54,6 @@
       color: var(--text);
       font-size: 14px;
     }
-
     button {
       width: 100%;
       padding: 13px 16px;
@@ -74,25 +65,21 @@
       font-weight: 700;
       cursor: pointer;
     }
-
     button:disabled {
       opacity: 0.5;
       cursor: wait;
     }
-
     .status {
       margin: 12px 0;
       font-size: 13px;
       line-height: 1.7;
       overflow-wrap: anywhere;
     }
-
     .preview-title {
       margin: 20px 0 10px;
       font-size: 15px;
       font-weight: 700;
     }
-
     .image-frame {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -101,36 +88,30 @@
       border: 1px solid var(--border);
       border-radius: 4px;
     }
-
     canvas {
       display: block;
       width: 100%;
       height: 100%;
     }
-
     .note {
       margin-top: 14px;
       color: #777;
       font-size: 12px;
       line-height: 1.8;
     }
-
     @media (max-width: 480px) {
       body {
         padding: 12px;
       }
-
       h1 {
         font-size: 19px;
       }
     }
   </style>
 </head>
-
 <body>
   <main class="container">
     <h1>📺 TVerランキング画像メーカー</h1>
-
     <div class="controls">
       <div>
         <label for="episode-select">エピソードを選択</label>
@@ -138,22 +119,17 @@
           <option value="">読み込み中...</option>
         </select>
       </div>
-
       <button id="reload-button" type="button">
         🔄 最新データを取得
       </button>
-
       <button id="save-button" type="button" disabled>
         📥 正方形の画像を保存
       </button>
     </div>
-
     <div id="status" class="status" role="status">
       公開スプレッドシートを読み込んでいます...
     </div>
-
     <div class="preview-title">画像プレビュー（1:1）</div>
-
     <div class="image-frame">
       <canvas
         id="image-canvas"
@@ -162,49 +138,39 @@
         aria-label="番組名、取得日時、大きな順位バッジ、サムネイル、エピソードタイトルを配置した正方形の画像"
       ></canvas>
     </div>
-
     <p class="note">
       ・画像サイズ：1080 × 1080 px<br>
       ・サムネイル：横幅最大90%、中央配置<br>
-      ・順位バッジ：金色の縁取りとピンクのグラデーション<br>
+      ・順位バッジ：黒背景に白の大きな「#順位」<br>
       ・順位を大きく表示し、サムネイル左下に重ねます。<br>
       ・元画像のアスペクト比を維持し、切り取りません。<br>
       ・画像URL：GitHub Pages<br>
       ・保存形式：PNG
     </p>
   </main>
-
   <script>
     // =========================================================
     // 設定
     // =========================================================
-
     const CONFIG = {
       PUBLISHED_ID:
         "2PACX-1vTJofs8FiOCnnavLtBInpn1d6u9YiJ6kZLFDBNI8iRTL4RBJBz3PSQtMSiSKt35B0xgtv6p9zKTy-75",
-
       GID: "91701956",
-
       // GitHub Pagesのサムネイル画像
       THUMBNAIL_BASE:
         "https://46memorybit.github.io/meets_tver_thumbnail/images/",
-
       IMAGE_SIZE: 1080,
-
       // サムネイルの最大幅
       THUMBNAIL_WIDTH_RATE: 0.90,
-
       // サムネイルの最大高さ
       THUMBNAIL_MAX_HEIGHT: 620
     };
-
     CONFIG.CSV_URL =
       "https://docs.google.com/spreadsheets/d/e/" +
       CONFIG.PUBLISHED_ID +
       "/pub?gid=" +
       CONFIG.GID +
       "&single=true&output=csv";
-
     // CSVの列番号（0始まり）
     const COLUMNS = {
       timestamp: 0,
@@ -216,40 +182,31 @@
       programName: 6,
       episodeTitle: 7
     };
-
     // =========================================================
     // DOM
     // =========================================================
-
     const canvas = document.getElementById("image-canvas");
     const ctx = canvas.getContext("2d");
-
     const select = document.getElementById("episode-select");
     const reloadButton = document.getElementById("reload-button");
     const saveButton = document.getElementById("save-button");
     const status = document.getElementById("status");
-
     let latestRows = [];
     let latestTimestamp = null;
     let currentImage = null;
     let renderVersion = 0;
-
     // =========================================================
     // CSVパーサー
     // =========================================================
-
     function parseCSV(text) {
       const rows = [];
       let row = [];
       let cell = "";
       let inQuotes = false;
-
       text = text.replace(/^\uFEFF/, "");
-
       for (let i = 0; i < text.length; i++) {
         const char = text[i];
         const next = text[i + 1];
-
         if (char === '"') {
           if (inQuotes && next === '"') {
             cell += '"';
@@ -267,46 +224,35 @@
           if (char === "\r" && next === "\n") {
             i++;
           }
-
           row.push(cell);
-
           if (row.some(v => v.trim() !== "")) {
             rows.push(row);
           }
-
           row = [];
           cell = "";
         } else {
           cell += char;
         }
       }
-
       if (cell !== "" || row.length > 0) {
         row.push(cell);
-
         if (row.some(v => v.trim() !== "")) {
           rows.push(row);
         }
       }
-
       return rows;
     }
-
     // =========================================================
     // 取得日時の解析
     // =========================================================
-
     function parseTimestamp(value) {
       if (value == null || String(value).trim() === "") {
         return null;
       }
-
       const text = String(value).trim();
-
       const match = text.match(
         /^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})日?(?:[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/
       );
-
       if (match) {
         const date = new Date(
           Number(match[1]),
@@ -316,20 +262,15 @@
           Number(match[5] || 0),
           Number(match[6] || 0)
         );
-
         if (!Number.isNaN(date.getTime())) {
           return date;
         }
       }
-
       const parsed = new Date(text);
-
       return Number.isNaN(parsed.getTime()) ? null : parsed;
     }
-
     function formatDate(date) {
       if (!date) return "-";
-
       return new Intl.DateTimeFormat("ja-JP", {
         year: "numeric",
         month: "2-digit",
@@ -340,62 +281,48 @@
         hour12: false
       }).format(date);
     }
-
     // =========================================================
     // 背景
     // =========================================================
-
     function drawBackground() {
       const size = CONFIG.IMAGE_SIZE;
-
       ctx.clearRect(0, 0, size, size);
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, size, size);
     }
-
     // =========================================================
     // ヘッダー
     // =========================================================
-
     function drawHeader(programName, timestamp) {
       const size = CONFIG.IMAGE_SIZE;
       const padding = 40;
       const fontSize = 29;
-
       ctx.fillStyle = "#e86a9a";
       ctx.fillRect(0, 0, size, 5);
-
       // 左上：番組名
       ctx.font = `700 ${fontSize}px sans-serif`;
       ctx.fillStyle = "#e86a9a";
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
-
       const maxProgramWidth = 540;
       const originalProgram = String(programName || "番組名なし");
       let program = originalProgram;
-
       while (
         ctx.measureText(program).width > maxProgramWidth &&
         program.length > 1
       ) {
         program = program.slice(0, -1);
       }
-
       if (program !== originalProgram) {
         program = program.slice(0, -1) + "…";
       }
-
       ctx.fillText(program, padding, 62);
-
       // 右上：取得日時
       const dateText = formatDate(timestamp);
-
       ctx.font = "500 19px sans-serif";
       ctx.fillStyle = "#777777";
       ctx.textAlign = "right";
       ctx.fillText(dateText, size - padding, 62);
-
       // 区切り線
       ctx.strokeStyle = "#f0dce4";
       ctx.lineWidth = 2;
@@ -404,60 +331,44 @@
       ctx.lineTo(size - padding, 108);
       ctx.stroke();
     }
-
     // =========================================================
     // エピソードタイトル
     // =========================================================
-
     function drawEpisodeTitle(title) {
       const size = CONFIG.IMAGE_SIZE;
       const padding = 55;
       const maxWidth = size - padding * 2;
       const text = String(title || "エピソードタイトルなし");
-
       ctx.fillStyle = "#e86a9a";
       ctx.fillRect(padding, 868, size - padding * 2, 3);
-
       ctx.fillStyle = "#333333";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-
       const maxFontSize = 39;
       const minFontSize = 25;
       let fontSize = maxFontSize;
-
       while (fontSize > minFontSize) {
         ctx.font = `700 ${fontSize}px sans-serif`;
-
         const lines = wrapText(text, maxWidth);
-
         if (lines.length <= 3) break;
-
         fontSize -= 2;
       }
-
       ctx.font = `700 ${fontSize}px sans-serif`;
-
       const lines = wrapText(text, maxWidth);
       const visibleLines = lines.slice(0, 3);
-
       if (lines.length > 3) {
         let last = visibleLines[2];
-
         while (
           ctx.measureText(last + "…").width > maxWidth &&
           last.length > 1
         ) {
           last = last.slice(0, -1);
         }
-
         visibleLines[2] = last + "…";
       }
-
       const lineHeight = fontSize * 1.45;
       const startY =
         925 - ((visibleLines.length - 1) * lineHeight) / 2;
-
       visibleLines.forEach((line, index) => {
         ctx.fillText(
           line,
@@ -467,14 +378,11 @@
         );
       });
     }
-
     function wrapText(text, maxWidth) {
       const lines = [];
       let line = "";
-
       for (const char of text) {
         const candidate = line + char;
-
         if (
           line &&
           ctx.measureText(candidate).width > maxWidth
@@ -485,198 +393,129 @@
           line = candidate;
         }
       }
-
       if (line) lines.push(line);
-
       return lines;
     }
-
     // =========================================================
-    // 大きく目立つ順位バッジ
-    // 金色の縁取り＋ピンクのグラデーション
+    // 大きく目立つ順位バッジ（YouTube Music風）
+    // 黒背景＋白の大きな「#順位」
     // サムネイルの左下に重ねて表示
     // =========================================================
-
     function drawRankBadge(rank, x, bottomY) {
       const rawRank = String(rank ?? "").trim();
-
       if (!rawRank) return;
 
-      const label = /^\d+(?:\.\d+)?$/.test(rawRank)
-        ? `${rawRank}位`
-        : rawRank;
+      const label = `#${rawRank}`;
 
       ctx.save();
 
-      // バッジのサイズ
-      const fontSize = 64;
-      const paddingX = 32;
-      const badgeHeight = 100;
+      const fontSize = 68;
+      const paddingX = 30;
+      const badgeHeight = 108;
 
       ctx.font = `900 ${fontSize}px sans-serif`;
-
       const badgeWidth = Math.max(
-        180,
+        168,
         ctx.measureText(label).width + paddingX * 2
       );
 
-      const badgeX = x + 18;
-      const badgeY = bottomY - badgeHeight - 18;
-      const radius = 22;
+      const badgeX = x + 22;
+      const badgeY = bottomY - badgeHeight - 20;
+      const radius = 18;
 
-      // 外側の影
-      ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-      ctx.shadowBlur = 18;
+      // 影
+      ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
+      ctx.shadowBlur = 14;
       ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 6;
+      ctx.shadowOffsetY = 5;
 
-      // 金色の外枠
+      // 黒背景
       ctx.beginPath();
-      ctx.roundRect(
-        badgeX,
-        badgeY,
-        badgeWidth,
-        badgeHeight,
-        radius
-      );
-
-      ctx.fillStyle = "#FFD76A";
+      ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, radius);
+      ctx.fillStyle = "#111111";
       ctx.fill();
 
-      // 内側のピンクグラデーション
+      // 薄い白の縁
       ctx.shadowColor = "transparent";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-      const border = 6;
-
-      const gradient = ctx.createLinearGradient(
-        badgeX,
-        badgeY,
-        badgeX + badgeWidth,
-        badgeY + badgeHeight
-      );
-
-      gradient.addColorStop(0, "#FF4F91");
-      gradient.addColorStop(0.5, "#F01668");
-      gradient.addColorStop(1, "#B90048");
-
-      ctx.beginPath();
-      ctx.roundRect(
-        badgeX + border,
-        badgeY + border,
-        badgeWidth - border * 2,
-        badgeHeight - border * 2,
-        radius - 5
-      );
-
-      ctx.fillStyle = gradient;
-      ctx.fill();
-
-      // 白い順位文字＋暗い縁取り
+      // 白い順位文字
       ctx.fillStyle = "#FFFFFF";
       ctx.font = `900 ${fontSize}px sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "rgba(100, 0, 35, 0.65)";
-      ctx.lineJoin = "round";
-
       const textX = badgeX + badgeWidth / 2;
       const textY = badgeY + badgeHeight / 2 + 1;
 
-      ctx.strokeText(label, textX, textY);
       ctx.fillText(label, textX, textY);
 
       ctx.restore();
     }
-
     // =========================================================
     // サムネイル描画
     // アスペクト比を維持し、切り取り・引き伸ばしをしない
     // =========================================================
-
     function drawThumbnail(img, rank) {
       const size = CONFIG.IMAGE_SIZE;
-
       const maxWidth =
         size * CONFIG.THUMBNAIL_WIDTH_RATE;
-
       const maxHeight = CONFIG.THUMBNAIL_MAX_HEIGHT;
-
       const scale = Math.min(
         maxWidth / img.naturalWidth,
         maxHeight / img.naturalHeight
       );
-
       const width = img.naturalWidth * scale;
       const height = img.naturalHeight * scale;
-
       const x = (size - width) / 2;
-
       // サムネイルの配置範囲
       const minY = 135;
       const maxY = 845;
-
       const availableHeight = maxY - minY;
       const y = minY + (availableHeight - height) / 2;
-
       ctx.drawImage(img, x, y, width, height);
-
       // 順位バッジをサムネイル左下に重ねる
       drawRankBadge(rank, x, y + height);
     }
-
     // =========================================================
     // 画像の生成
     // =========================================================
-
     async function renderImage(row) {
       const version = ++renderVersion;
-
       saveButton.disabled = true;
       currentImage = null;
-
       const programName =
         String(row[COLUMNS.programName] || "").trim() ||
         "番組名なし";
-
       const episodeTitle =
         String(row[COLUMNS.episodeTitle] || "").trim() ||
         "エピソードタイトルなし";
-
       const episodeId =
         String(row[COLUMNS.episodeId] || "").trim();
-
       drawBackground();
       drawHeader(programName, latestTimestamp);
       drawEpisodeTitle(episodeTitle);
-
       if (!episodeId) {
         status.textContent =
           "エピソードIDがないため、サムネイルを表示できません。";
-
         return;
       }
-
       // GitHub Pagesの画像URLのみを使用
       const imageUrl =
         CONFIG.THUMBNAIL_BASE +
         encodeURIComponent(episodeId) +
         ".jpg";
-
       status.textContent =
         "サムネイルを読み込んでいます...";
-
       try {
         const img = new Image();
-
         // Canvasへの描画とPNG保存のためCORSを指定
         img.crossOrigin = "anonymous";
         img.referrerPolicy = "no-referrer";
-
         await new Promise((resolve, reject) => {
           img.onload = resolve;
-
           img.onerror = () => {
             reject(
               new Error(
@@ -685,12 +524,9 @@
               )
             );
           };
-
           img.src = imageUrl;
         });
-
         if (version !== renderVersion) return;
-
         if (
           !img.naturalWidth ||
           !img.naturalHeight
@@ -699,12 +535,10 @@
             "画像サイズを取得できませんでした。"
           );
         }
-
         drawBackground();
         drawHeader(programName, latestTimestamp);
         drawThumbnail(img, row[COLUMNS.rank]);
         drawEpisodeTitle(episodeTitle);
-
         // CanvasがPNGとして出力できるか確認
         await new Promise((resolve, reject) => {
           canvas.toBlob(
@@ -722,60 +556,45 @@
             "image/png"
           );
         });
-
         if (version !== renderVersion) return;
-
         currentImage = img;
         saveButton.disabled = false;
-
         status.textContent =
           "画像を生成しました。PNG形式で保存できます。";
-
       } catch (error) {
         if (version !== renderVersion) return;
-
         drawBackground();
         drawHeader(programName, latestTimestamp);
         drawEpisodeTitle(episodeTitle);
-
         currentImage = null;
         saveButton.disabled = true;
-
         status.textContent =
           error.message +
           " GitHub Pages上の画像の存在とCORS設定を確認してください。";
-
         console.error(error);
       }
     }
-
     // =========================================================
     // CSVから最新取得日時のランキングを取得
     // =========================================================
-
     async function loadLatestData() {
       reloadButton.disabled = true;
       select.disabled = true;
       saveButton.disabled = true;
-
       status.textContent =
         "公開スプレッドシートを読み込んでいます...";
-
       try {
         const response = await fetch(
           CONFIG.CSV_URL + "&_=" + Date.now(),
           { cache: "no-store" }
         );
-
         if (!response.ok) {
           throw new Error(
             "CSV取得エラー: HTTP " + response.status
           );
         }
-
         const csvText = await response.text();
         const trimmedCSV = csvText.trim();
-
         if (
           !trimmedCSV ||
           /^<!DOCTYPE html/i.test(trimmedCSV) ||
@@ -785,20 +604,15 @@
             "公開CSVを取得できません。スプレッドシートの公開設定を確認してください。"
           );
         }
-
         const parsedRows = parseCSV(csvText);
-
         if (!parsedRows.length) {
           throw new Error("CSVにデータがありません。");
         }
-
         // ヘッダー行を自動判定
         let dataRows = parsedRows;
-
         const firstRow = parsedRows[0].map(v =>
           v.trim().replace(/\s+/g, "").toLowerCase()
         );
-
         if (
           firstRow.some(v =>
             ["取得日時", "取得時刻", "timestamp"].includes(v)
@@ -806,7 +620,6 @@
         ) {
           dataRows = parsedRows.slice(1);
         }
-
         // 有効な取得日時がある行を抽出
         const validRows = dataRows
           .map(row => ({
@@ -816,172 +629,127 @@
             )
           }))
           .filter(item => item.timestamp !== null);
-
         if (!validRows.length) {
           throw new Error(
             "有効な取得日時が見つかりません。CSVの列構成を確認してください。"
           );
         }
-
         // 最新取得日時を特定
         const latestTime = Math.max(
           ...validRows.map(
             item => item.timestamp.getTime()
           )
         );
-
         latestTimestamp = new Date(latestTime);
-
         latestRows = validRows
           .filter(
             item =>
               item.timestamp.getTime() === latestTime
           )
           .map(item => item.row);
-
         if (!latestRows.length) {
           throw new Error("最新データがありません。");
         }
-
         // エピソード選択リストを生成
         select.replaceChildren();
-
         latestRows.forEach((row, index) => {
           const option = document.createElement("option");
-
           option.value = String(index);
-
           const rank = String(
             row[COLUMNS.rank] || "-"
           ).trim();
-
           const program =
             row[COLUMNS.programName] || "番組名なし";
-
           const title =
             row[COLUMNS.episodeTitle] || "タイトルなし";
-
           option.textContent =
             rank + "位｜" + program + "｜" + title;
-
           select.appendChild(option);
         });
-
         select.disabled = false;
-
         status.textContent =
           "最新取得日時：" +
           formatDate(latestTimestamp) +
           " ／ " +
           latestRows.length +
           "件";
-
         await renderImage(latestRows[0]);
-
       } catch (error) {
         status.textContent =
           "データ取得エラー：" + error.message;
-
         console.error(error);
-
         latestRows = [];
         currentImage = null;
-
         select.replaceChildren();
-
         const option = document.createElement("option");
         option.value = "";
         option.textContent = "データを取得できませんでした";
-
         select.appendChild(option);
-
       } finally {
         reloadButton.disabled = false;
       }
     }
-
     // =========================================================
     // PNG画像を保存
     // =========================================================
-
     function saveImage() {
       if (!currentImage) {
         status.textContent =
           "保存できる画像がありません。";
-
         return;
       }
-
       try {
         canvas.toBlob(blob => {
           if (!blob) {
             status.textContent =
               "PNG画像を作成できませんでした。";
-
             return;
           }
-
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
-
           const row =
             latestRows[Number(select.value)] || [];
-
           const episodeId =
             String(row[COLUMNS.episodeId] || "episode");
-
           const safeEpisodeId = episodeId.replace(
             /[^a-zA-Z0-9_-]/g,
             "_"
           );
-
           link.href = url;
           link.download =
             "tver-ranking-" + safeEpisodeId + ".png";
-
           document.body.appendChild(link);
           link.click();
           link.remove();
-
           setTimeout(() => {
             URL.revokeObjectURL(url);
           }, 1000);
-
           status.textContent =
             "PNG画像の保存を開始しました。";
-
         }, "image/png");
-
       } catch (error) {
         status.textContent =
           "画像を保存できませんでした。";
-
         console.error(error);
       }
     }
-
     // =========================================================
     // イベント
     // =========================================================
-
     select.addEventListener("change", () => {
       const row = latestRows[Number(select.value)];
-
       if (row) {
         renderImage(row);
       }
     });
-
     reloadButton.addEventListener(
       "click",
       loadLatestData
     );
-
     saveButton.addEventListener(
       "click",
       saveImage
     );
-
     // 初回読み込み
     drawBackground();
     loadLatestData();
