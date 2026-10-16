@@ -137,11 +137,32 @@
       display: none;
     }
 
-    #episodeIdBadge {
+    /* サムネイル左下に重ねる順位バッジ */
+    #rankBadge {
       position: absolute;
       left: 10px;
       bottom: 10px;
-      max-width: calc(100% - 20px);
+      z-index: 2;
+      padding: 6px 11px;
+      border: 2px solid #fff;
+      border-radius: 7px;
+      background: var(--pink);
+      color: #fff;
+      font-size: clamp(14px, 3.8vw, 21px);
+      font-weight: 900;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+      box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+      white-space: nowrap;
+    }
+
+    /* エピソードIDは右下に表示 */
+    #episodeIdBadge {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      z-index: 2;
+      max-width: calc(100% - 110px);
       padding: 5px 9px;
       overflow: hidden;
       border-radius: 5px;
@@ -270,6 +291,7 @@
         <div id="thumbnailFrame">
           <div id="imagePlaceholder">サムネイルを読み込んでいます…</div>
           <img id="thumbnail" alt="エピソードのサムネイル">
+          <div id="rankBadge" hidden></div>
           <div id="episodeIdBadge" hidden></div>
         </div>
 
@@ -333,6 +355,7 @@
     const createdAtElement = document.getElementById("createdAt");
     const thumbnailElement = document.getElementById("thumbnail");
     const placeholderElement = document.getElementById("imagePlaceholder");
+    const rankBadge = document.getElementById("rankBadge");
     const episodeIdBadge = document.getElementById("episodeIdBadge");
     const episodeTitleElement = document.getElementById("episodeTitle");
     const sourceLabelElement = document.getElementById("sourceLabel");
@@ -567,6 +590,16 @@
 
       const episodeId = getEpisodeId(item.episodeId);
 
+      // 順位をサムネイル左下に重ねて表示
+      if (Number.isFinite(Number(item.rank)) && Number(item.rank) > 0 && Number(item.rank) < 999999) {
+        rankBadge.textContent = Number(item.rank) + "位";
+        rankBadge.hidden = false;
+      } else {
+        rankBadge.textContent = "順位不明";
+        rankBadge.hidden = false;
+      }
+
+      // エピソードIDはサムネイル右下に表示
       if (episodeId) {
         episodeIdBadge.textContent = "ID: " + episodeId;
         episodeIdBadge.hidden = false;
