@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -160,14 +159,15 @@
         id="image-canvas"
         width="1080"
         height="1080"
-        aria-label="番組名、取得日時、サムネイル、順位、エピソードタイトルを配置した正方形の画像"
+        aria-label="番組名、取得日時、大きな順位バッジ、サムネイル、エピソードタイトルを配置した正方形の画像"
       ></canvas>
     </div>
 
     <p class="note">
       ・画像サイズ：1080 × 1080 px<br>
       ・サムネイル：横幅最大90%、中央配置<br>
-      ・順位バッジ：サムネイル左下に表示<br>
+      ・順位バッジ：金色の縁取りとピンクのグラデーション<br>
+      ・順位を大きく表示し、サムネイル左下に重ねます。<br>
       ・元画像のアスペクト比を維持し、切り取りません。<br>
       ・画像URL：GitHub Pages<br>
       ・保存形式：PNG
@@ -185,13 +185,13 @@
 
       GID: "91701956",
 
-      // サムネイル画像のベースURL
+      // GitHub Pagesのサムネイル画像
       THUMBNAIL_BASE:
         "https://46memorybit.github.io/meets_tver_thumbnail/images/",
 
       IMAGE_SIZE: 1080,
 
-      // 正方形画像に対するサムネイルの最大幅
+      // サムネイルの最大幅
       THUMBNAIL_WIDTH_RATE: 0.90,
 
       // サムネイルの最大高さ
@@ -492,8 +492,9 @@
     }
 
     // =========================================================
-    // 順位バッジ
-    // サムネイルの左下に重ねる
+    // 大きく目立つ順位バッジ
+    // 金色の縁取り＋ピンクのグラデーション
+    // サムネイルの左下に重ねて表示
     // =========================================================
 
     function drawRankBadge(rank, x, bottomY) {
@@ -507,35 +508,29 @@
 
       ctx.save();
 
-      const fontSize = 38;
-      const paddingX = 22;
-      const badgeHeight = 62;
+      // バッジのサイズ
+      const fontSize = 64;
+      const paddingX = 32;
+      const badgeHeight = 100;
 
       ctx.font = `900 ${fontSize}px sans-serif`;
 
       const badgeWidth = Math.max(
-        110,
+        180,
         ctx.measureText(label).width + paddingX * 2
       );
 
       const badgeX = x + 18;
       const badgeY = bottomY - badgeHeight - 18;
-      const radius = 15;
+      const radius = 22;
 
-      const gradient = ctx.createLinearGradient(
-        badgeX,
-        badgeY,
-        badgeX + badgeWidth,
-        badgeY + badgeHeight
-      );
+      // 外側の影
+      ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 6;
 
-      gradient.addColorStop(0, "#ff5b9b");
-      gradient.addColorStop(1, "#e73578");
-
-      ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-      ctx.shadowBlur = 12;
-      ctx.shadowOffsetY = 4;
-
+      // 金色の外枠
       ctx.beginPath();
       ctx.roundRect(
         badgeX,
@@ -545,19 +540,52 @@
         radius
       );
 
+      ctx.fillStyle = "#FFD76A";
+      ctx.fill();
+
+      // 内側のピンクグラデーション
+      ctx.shadowColor = "transparent";
+
+      const border = 6;
+
+      const gradient = ctx.createLinearGradient(
+        badgeX,
+        badgeY,
+        badgeX + badgeWidth,
+        badgeY + badgeHeight
+      );
+
+      gradient.addColorStop(0, "#FF4F91");
+      gradient.addColorStop(0.5, "#F01668");
+      gradient.addColorStop(1, "#B90048");
+
+      ctx.beginPath();
+      ctx.roundRect(
+        badgeX + border,
+        badgeY + border,
+        badgeWidth - border * 2,
+        badgeHeight - border * 2,
+        radius - 5
+      );
+
       ctx.fillStyle = gradient;
       ctx.fill();
 
-      ctx.shadowColor = "transparent";
-      ctx.fillStyle = "#ffffff";
+      // 白い順位文字＋暗い縁取り
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `900 ${fontSize}px sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      ctx.fillText(
-        label,
-        badgeX + badgeWidth / 2,
-        badgeY + badgeHeight / 2
-      );
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "rgba(100, 0, 35, 0.65)";
+      ctx.lineJoin = "round";
+
+      const textX = badgeX + badgeWidth / 2;
+      const textY = badgeY + badgeHeight / 2 + 1;
+
+      ctx.strokeText(label, textX, textY);
+      ctx.fillText(label, textX, textY);
 
       ctx.restore();
     }
@@ -594,6 +622,7 @@
 
       ctx.drawImage(img, x, y, width, height);
 
+      // 順位バッジをサムネイル左下に重ねる
       drawRankBadge(rank, x, y + height);
     }
 
@@ -620,8 +649,6 @@
 
       drawBackground();
       drawHeader(programName, latestTimestamp);
-
-      // サムネイル読み込み前でもタイトルを表示
       drawEpisodeTitle(episodeTitle);
 
       if (!episodeId) {
@@ -631,11 +658,7 @@
         return;
       }
 
-      // =======================================================
       // GitHub Pagesの画像URLのみを使用
-      // 例：https://46memorybit.github.io/meets_tver_thumbnail/images/ep57kv81ca.jpg
-      // =======================================================
-
       const imageUrl =
         CONFIG.THUMBNAIL_BASE +
         encodeURIComponent(episodeId) +
@@ -647,7 +670,7 @@
       try {
         const img = new Image();
 
-        // CanvasからPNG保存するためCORSを指定
+        // Canvasへの描画とPNG保存のためCORSを指定
         img.crossOrigin = "anonymous";
         img.referrerPolicy = "no-referrer";
 
@@ -800,7 +823,7 @@
           );
         }
 
-        // 最新の取得日時を特定
+        // 最新取得日時を特定
         const latestTime = Math.max(
           ...validRows.map(
             item => item.timestamp.getTime()
