@@ -312,7 +312,7 @@
       bottom: 0;
       z-index: 200;
       padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(255, 250, 252, .9);
+      background: #fffafc;
       border-top: 1px solid var(--line);
     }
     .bottom-nav-inner {
@@ -405,18 +405,6 @@
       box-shadow: none;
       cursor: default;
     }
-    .ranking-select {
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto 12px;
-      display: block;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--paper);
-      color: var(--ink);
-      font-size: 14px;
-    }
 
   </style>
 </head>
@@ -432,14 +420,7 @@
     </div>
   </header>
   <main id="homePage" class="page active">
-    <div class="ranking-section">
-      <div class="section-label">
-        <p class="mark">ランキング</p>
-        <div id="rankingStatus" class="status">ランキングを読み込んでいます…</div>
-      </div>
-      <select id="ranking-select" class="ranking-select" disabled>
-        <option value="">読み込み中...</option>
-      </select>
+    <div class="ranking-section" id="rankingSection" style="display: none;">
       <div class="ranking-frame">
         <canvas id="ranking-canvas" width="1080" height="1080" aria-label="TVerランキング画像"></canvas>
       </div>
@@ -613,7 +594,8 @@
       THUMBNAIL_BASE: "https://46memorybit.github.io/meets_tver_thumbnail/images/",
       IMAGE_SIZE: 1080,
       THUMBNAIL_WIDTH_RATE: 0.82,
-      THUMBNAIL_MAX_HEIGHT: 560
+      THUMBNAIL_MAX_HEIGHT: 560,
+      LOGO_URL: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iODFweCIgaGVpZ2h0PSI1OXB4IiB2aWV3Qm94PSIwIDAgODEgNTkiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+UEMvaXRlbS9sb2dvPC90aXRsZT4KICAgIDxkZWZzPgogICAgICAgIDxwb2x5Z29uIGlkPSJwYXRoLTEiIHBvaW50cz0iMCAtMy44NTA2ODY0MWUtMTQgMCAyMy43NzAwNDM2IDYuODI1NTA2NDggMjMuNzcwMDQzNiA2LjgyNTUwNjQ4IDE1LjI4NjAwNDcgMzQuMTY4NjQ5OSAxNS4yODYwMDQ3IDM0LjE2ODY0OTkgOC40ODQ4Mzk3IDYuODI1NTA2NDggOC40ODQ4Mzk3IDYuODI1NTA2NDggLTMuODUwNjg2NDFlLTE0Ij48L3BvbHlnb24+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IHgxPSItMTIuNTY1Nzc3OCUiIHkxPSI2OS40Mzc3NDE3JSIgeDI9Ijk3Ljg2OTMyNTUlIiB5Mj0iMTkuODgyMjc4NSUiIGlkPSJsaW5lYXJHcmFkaWVudC0zIj4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzAwRkZGRiIgb2Zmc2V0PSIwJSI+PC9zdG9wPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMDA1QUI0IiBvZmZzZXQ9IjEwMCUiPjwvc3RvcD4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxwb2x5Z29uIGlkPSJwYXRoLTQiIHBvaW50cz0iMCAtMy44NTA2ODY0MWUtMTQgMCA3LjI2NDAyNTM4IDE3Ljk5NjU2OTMgMTUuMzA2NDI1IDAgMjMuMzUwMDI1OCAwIDMwLjUyODc2NjQgMzQuMTY4NjQ5OSAxNS4yODUyMDM5IDAuMDAwNDAzMTEyODMzIC0zLjg1MDY4NjQxZS0xNCI+PC9wb2x5Z29uPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0iLTE1LjM2NDE5NDclIiB5MT0iNjcuNzIzNTc0NCUiIHgyPSI5NS4wODk3ODM2JSIgeTI9IjQuMDk0MzcyODUlIiBpZD0ibGluZWFyR3JhZGllbnQtNiI+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiMwMEZGRkYiIG9mZnNldD0iMCUiPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzAwNUFCNCIgb2Zmc2V0PSIxMDAlIj48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSJQQy9pdGVtL2xvZ28iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJpbWcvbG9nby9saWdodCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi45NzczLCAxMS42MTMpIj4KICAgICAgICAgICAgPGcgaWQ9Ikdyb3VwLTEyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMy41MjI3LCAxNy44MTM4KSByb3RhdGUoLTI3MCkgdHJhbnNsYXRlKC0zMy41MjI3LCAtMTcuODEzOCl0cmFuc2xhdGUoMTUuNzA4OSwgLTE1LjcwODkpIj4KICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cC0zIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMCwgNDMuMjc1NCkiPgogICAgICAgICAgICAgICAgICAgIDxtYXNrIGlkPSJtYXNrLTIiIGZpbGw9IndoaXRlIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHVzZSB4bGluazpocmVmPSIjcGF0aC0xIj48L3VzZT4KICAgICAgICAgICAgICAgICAgICA8L21hc2s+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IkNsaXAtMiI+PC9nPgogICAgICAgICAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTEiIGZpbGw9InVybCgjbGluZWFyR3JhZGllbnQtMykiIG1hc2s9InVybCgjbWFzay0yKSIgcG9pbnRzPSIwIC0zLjg1MDY4NjQxZS0xNCAwIDIzLjc3MDA0MzYgNi44MjU1MDY0OCAyMy43NzAwNDM2IDYuODI1NTA2NDggMTUuMjg2MDA0NyAzNC4xNjg2NDk5IDE1LjI4NjAwNDcgMzQuMTY4NjQ5OSA4LjQ4NDgzOTcgNi44MjU1MDY0OCA4LjQ4NDgzOTcgNi44MjU1MDY0OCAtMy44NTA2ODY0MWUtMTQiPjwvcG9seWdvbj4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cC02IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMCwgMTYuNTgzMykiPgogICAgICAgICAgICAgICAgICAgIDxtYXNrIGlkPSJtYXNrLTUiIGZpbGw9IndoaXRlIj4KICAgICAgICAgICAgICAgICAgICAgICAgPHVzZSB4bGluazpocmVmPSIjcGF0aC00Ij48L3VzZT4KICAgICAgICAgICAgICAgICAgICA8L21hc2s+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IkNsaXAtNSI+PC9nPgogICAgICAgICAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJGaWxsLTQiIGZpbGw9InVybCgjbGluZWFyR3JhZGllbnQtNikiIG1hc2s9InVybCgjbWFzay01KSIgcG9pbnRzPSIwIC0zLjg1MDY4NjQxZS0xNCAwIDcuMjY0MDI1MzggMTcuOTk2NTY5MyAxNS4zMDY0MjUgMCAyMy4zNTAwMjU4IDAgMzAuNTI4NzY2NCAzNC4xNjg2NDk5IDE1LjI4NTIwMzkgMC4wMDA0MDMxMTI4MzMgLTMuODUwNjg2NDFlLTE0Ij48L3BvbHlnb24+CiAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICA8ZyBpZD0iR3JvdXAtMTEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE4LjU2MjIsIC0wKSIgZmlsbD0iIzNDM0MzQyI+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTguMTg5MTkyNTIsMjAuMjY3NzI1NyBDOC4xODkxOTI1MiwyMS4wNzMzMjcgNy40ODM3NDUwNiwyMS45NTcwMDYgNi40Nzc5Nzg1NCwyMS45NTcwMDYgQzUuMTA0MTcwMDEsMjEuOTU3MDA2IDMuMzkyNTUyOTIsMjEuMjA4NjYxNiAzLjM5MjU1MjkyLDE5LjUyMDE4MjEgQzMuMzkyNTUyOTIsMTguMzgwNjQ4NiA0LjQ2MTYwODE1LDE3LjY3NTU0NzMgNS45NjAzODE2NiwxNy42NzU1NDczIEM3LjQxMzIwMDMxLDE3LjY3NTU0NzMgOC4xODkxOTI1MiwxOC41MjMxOTA0IDguMTg5MTkyNTIsMjAuMjY3NzI1NyBNMTMuMDY5Mjc2NSwxNy4xNzcwNTE0IEMxNS4zNDgwNzMzLDIwLjU3NTYzMTkgMTIuODc2NTg4NSwyMi42NTMyOTg2IDEwLjY2NDcwODQsMjIuMzQ2NTkzNSBDMTIuNDE1NDI3NSwxOC42MjM2OTA0IDEwLjAyMDUzNDEsMTMuNzY4NDYxIDUuOTE2MDM5MjUsMTMuNzY4NDYxIEMyLjYyNDYyMjk3LDEzLjc2ODQ2MSAtMC4zNTkyMTgyMTIsMTYuMTQzMjIzMSAwLjI5NzQ1MjU5MiwyMC40NTUxMTIxIEMwLjg4NTU5NDIxNSwyNC4zMTUzNTE4IDUuNDY2MTY1MzMsMjYuMTI3OTU0NyAxMC4zMjUyODc0LDI2LjEyNzk1NDcgQzEzLjg3MzQ4NjYsMjYuMTI3OTU0NyAxNi44OTg4NDg0LDIzLjk3NTAxMzIgMTcuMDU4MDc3OSwyMC4xNTY0MTUgQzE3LjIwNzYzMjgsMTYuNTUxMjI5IDE1LjA3MDczMTcsMTMuMTA4MjA0MiAxMy4xNTA3MDUzLDEzLjQ1NzM1MTUgQzEyLjA5ODU4MDgsMTMuNjQ5MTQyMyAxMS42NDUwNzg4LDE1LjA1NTc0MTQgMTMuMDY5Mjc2NSwxNy4xNzcwNTE0IiBpZD0iRmlsbC03Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTEuNjA2MzU5OTYsNS4yNTQ3OTI2MiBDMS42ODk4MDQzMiw2LjY0MDE3MDYyIDIuMzUyMTE4Nyw3LjkwOTQzMzEzIDMuMjc0ODQzOTcsOC4zMzcwNTg0OCBDMi4xNDI1MDAwMyw4LjI1MjE3NDA1IC0wLjA4OTUzNTcyNzQsOC4xMjA4NDM0MiAwLjAwMjc3NzExMTI0LDkuNzg4NTAyMjEgQzAuMDgyMTkwMzM5MywxMS4yMjM5MyAwLjczMTYwNTExMywxMi4wNTc1NTkyIDIuMTk0NTAxNTgsMTIuMDAzOTA1OCBDNS4yNjk0NDYyNywxMS44ODkzOTE5IDguMTczMDY4LDExLjY3Nzk4MTYgMTIuNjUzNjY3MSwxMS42MDY3MTA3IEMxMy42NjgzMDIxLDExLjU5MDY5NDggMTQuNjU5MTUzNSwxMS43NjUyNjg1IDE1LjAyNDc3NjgsMTEuNzg4MDkxMiBDMTYuMjM4OTUyNywxMS44NjY5Njk2IDE2Ljg5NDAxMSwxMS4wMjc3MzQ4IDE2Ljg5NDAxMSw5LjYwNzEyMTc5IEMxNi44OTQwMTEsOC4zNTUwNzY0MSAxNi4yMDgzMTYxLDcuNDcwNTk2NjMgMTUuMDA5NDU4NSw3LjY4NDQwOTMxIEMxMi44NjU3MDQ1LDguMDY2Nzg5NjUgMTAuODk1Mjg5LDguMjY3Nzg5NTggOC40ODk1MTE1OCw3Ljk0Nzg3MTM3IEM2LjExMzk2NzY1LDcuNjMyNzU3OTMgNS4xMDYxODU1Nyw2LjgxMjc0MjI4IDQuOTAzODIyOTMsNS43ODQ1MTk1MyBDNC42NTMwODY3NSw0LjUwNTI0NzA2IDUuMjI5OTQxMjEsMy4zMDE2NDk4NiA2LjEzODU1NzU0LDIuNjk2MjQ3NjggQzYuODM0NzMzNCwyLjIzMjE4NjA5IDcuMjM3ODQ2MjMsMS4yNTEyMTAzMyA2LjM4MTYzNDU3LDAuNDUzNjE2OTg0IEM1LjU1MTIyMjE0LC0wLjMxODc1MTI3NSA0LjY4NDkzMjY2LDAuMDQ5MjE0NzMyOSA0LjEwNjQ2NTc1LDAuNDI3OTkxNDk1IEMyLjYyMTM5ODA3LDEuMzk5NzU4MDkgMS40NzMzMzI3MiwzLjAzNzc4NzQxIDEuNjA2MzU5OTYsNS4yNTQ3OTI2MiIgaWQ9IkZpbGwtOSI+PC9wYXRoPgogICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4="
     };
     RANKING_CONFIG.CSV_URL = "https://docs.google.com/spreadsheets/d/e/" + RANKING_CONFIG.PUBLISHED_ID + "/pub?gid=" + RANKING_CONFIG.GID + "&single=true&output=csv";
     const RANKING_COLUMNS = {
@@ -628,14 +610,14 @@
     };
     const rankingCanvas = document.getElementById("ranking-canvas");
     const rankingCtx = rankingCanvas.getContext("2d");
-    const rankingSelect = document.getElementById("ranking-select");
     const saveRankingButton = document.getElementById("save-ranking");
     const shareRankingButton = document.getElementById("share-ranking");
-    const rankingStatus = document.getElementById("rankingStatus");
+    const rankingSection = document.getElementById("rankingSection");
     let rankingLatestRows = [];
     let rankingLatestTimestamp = null;
     let rankingCurrentBlob = null;
     let rankingRenderVersion = 0;
+    let rankingLogoImg = null;
 
     function parseCSV(text) {
       const rows = [];
@@ -698,6 +680,17 @@
       }).format(date);
     }
 
+    async function loadLogo() {
+      if (rankingLogoImg) return rankingLogoImg;
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => { rankingLogoImg = img; resolve(img); };
+        img.onerror = () => resolve(null);
+        img.src = RANKING_CONFIG.LOGO_URL;
+      });
+    }
+
     function drawRankingBackground() {
       const size = RANKING_CONFIG.IMAGE_SIZE;
       rankingCtx.clearRect(0, 0, size, size);
@@ -716,7 +709,7 @@
       rankingCtx.fillStyle = "#2a2430";
       rankingCtx.textAlign = "left";
       rankingCtx.textBaseline = "middle";
-      const maxProgramWidth = 560;
+      const maxProgramWidth = 480;
       const originalProgram = String(programName || "番組名なし");
       let program = originalProgram;
       while (rankingCtx.measureText(program).width > maxProgramWidth && program.length > 1) {
@@ -842,6 +835,19 @@
       drawRankingBadge(rank, x, y, height);
     }
 
+    function drawRankingLogo(logoImg) {
+      if (!logoImg) return;
+      const size = RANKING_CONFIG.IMAGE_SIZE;
+      const logoWidth = 120;
+      const logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth;
+      const x = size - logoWidth - 36;
+      const y = 100;
+      rankingCtx.save();
+      rankingCtx.globalAlpha = 0.9;
+      rankingCtx.drawImage(logoImg, x, y, logoWidth, logoHeight);
+      rankingCtx.restore();
+    }
+
     async function renderRankingImage(row) {
       const version = ++rankingRenderVersion;
       saveRankingButton.disabled = true;
@@ -850,15 +856,16 @@
       const programName = String(row[RANKING_COLUMNS.programName] || "").trim() || "番組名なし";
       const episodeTitle = String(row[RANKING_COLUMNS.episodeTitle] || "").trim() || "エピソードタイトルなし";
       const episodeId = String(row[RANKING_COLUMNS.episodeId] || "").trim();
+      const logoImg = await loadLogo();
       drawRankingBackground();
       drawRankingHeader(programName, rankingLatestTimestamp);
       drawRankingEpisodeTitle(episodeTitle);
+      if (logoImg) drawRankingLogo(logoImg);
       if (!episodeId) {
-        rankingStatus.textContent = "エピソードIDがないため、サムネイルを表示できません。";
+        rankingSection.style.display = "none";
         return;
       }
       const imageUrl = RANKING_CONFIG.THUMBNAIL_BASE + encodeURIComponent(episodeId) + ".jpg";
-      rankingStatus.textContent = "サムネイルを読み込んでいます...";
       try {
         const img = new Image();
         img.crossOrigin = "anonymous";
@@ -874,6 +881,7 @@
         drawRankingHeader(programName, rankingLatestTimestamp);
         drawRankingThumbnail(img, row[RANKING_COLUMNS.rank]);
         drawRankingEpisodeTitle(episodeTitle);
+        if (logoImg) drawRankingLogo(logoImg);
         const blob = await new Promise((resolve, reject) => {
           rankingCanvas.toBlob(b => b ? resolve(b) : reject(new Error("画像の準備に失敗しました。")), "image/png");
         });
@@ -881,32 +889,28 @@
         rankingCurrentBlob = blob;
         saveRankingButton.disabled = false;
         shareRankingButton.disabled = false;
-        rankingStatus.textContent = "画像を生成しました。";
+        rankingSection.style.display = "block";
       } catch (error) {
         if (version !== rankingRenderVersion) return;
-        drawRankingBackground();
-        drawRankingHeader(programName, rankingLatestTimestamp);
-        drawRankingEpisodeTitle(episodeTitle);
+        rankingSection.style.display = "none";
         rankingCurrentBlob = null;
         saveRankingButton.disabled = true;
         shareRankingButton.disabled = true;
-        rankingStatus.textContent = error.message + " GitHub Pages上の画像を確認してください。";
         console.error(error);
       }
     }
 
     async function loadLatestRanking() {
-      rankingSelect.disabled = true;
       saveRankingButton.disabled = true;
       shareRankingButton.disabled = true;
-      rankingStatus.textContent = "公開スプレッドシートを読み込んでいます...";
+      rankingSection.style.display = "none";
       try {
         const response = await fetch(RANKING_CONFIG.CSV_URL + "&_=" + Date.now(), { cache: "no-store" });
         if (!response.ok) throw new Error("CSV取得エラー: HTTP " + response.status);
         const csvText = await response.text();
         const trimmedCSV = csvText.trim();
         if (!trimmedCSV || /^<!DOCTYPE html/i.test(trimmedCSV) || /^<html/i.test(trimmedCSV)) {
-          throw new Error("公開CSVを取得できません。スプレッドシートの公開設定を確認してください。");
+          throw new Error("公開CSVを取得できません。");
         }
         const parsedRows = parseCSV(csvText);
         if (!parsedRows.length) throw new Error("CSVにデータがありません。");
@@ -922,6 +926,12 @@
         if (!validRows.length) throw new Error("有効な取得日時が見つかりません。");
         const latestTime = Math.max(...validRows.map(item => item.timestamp.getTime()));
         rankingLatestTimestamp = new Date(latestTime);
+        const now = Date.now();
+        const fiveMin = 5 * 60 * 1000;
+        if (now - rankingLatestTimestamp.getTime() > fiveMin) {
+          rankingSection.style.display = "none";
+          return;
+        }
         rankingLatestRows = validRows.filter(item => item.timestamp.getTime() === latestTime).map(item => item.row);
         if (!rankingLatestRows.length) throw new Error("最新データがありません。");
         rankingLatestRows.sort((a, b) => {
@@ -929,40 +939,20 @@
           const rb = parseInt(b[RANKING_COLUMNS.rank], 10) || 999;
           return ra - rb;
         });
-        rankingSelect.replaceChildren();
-        rankingLatestRows.forEach((row, index) => {
-          const option = document.createElement("option");
-          option.value = String(index);
-          const rank = String(row[RANKING_COLUMNS.rank] || "-").trim();
-          const program = row[RANKING_COLUMNS.programName] || "番組名なし";
-          const title = row[RANKING_COLUMNS.episodeTitle] || "タイトルなし";
-          option.textContent = rank + "位｜" + program + "｜" + title;
-          rankingSelect.appendChild(option);
-        });
-        rankingSelect.disabled = false;
-        rankingStatus.textContent = "最新取得日時：" + formatDate(rankingLatestTimestamp) + " ／ " + rankingLatestRows.length + "件";
         if (rankingLatestRows.length) await renderRankingImage(rankingLatestRows[0]);
       } catch (error) {
-        rankingStatus.textContent = "データ取得エラー：" + error.message;
+        rankingSection.style.display = "none";
         console.error(error);
         rankingLatestRows = [];
         rankingCurrentBlob = null;
-        rankingSelect.replaceChildren();
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "データを取得できませんでした";
-        rankingSelect.appendChild(option);
       }
     }
 
     function saveRankingImage() {
-      if (!rankingCurrentBlob) {
-        rankingStatus.textContent = "保存できる画像がありません。";
-        return;
-      }
+      if (!rankingCurrentBlob) return;
       const url = URL.createObjectURL(rankingCurrentBlob);
       const link = document.createElement("a");
-      const row = rankingLatestRows[Number(rankingSelect.value)] || [];
+      const row = rankingLatestRows[0] || [];
       const episodeId = String(row[RANKING_COLUMNS.episodeId] || "episode");
       const safeEpisodeId = episodeId.replace(/[^a-zA-Z0-9_-]/g, "_");
       link.href = url;
@@ -971,15 +961,11 @@
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      rankingStatus.textContent = "PNG画像の保存を開始しました。";
     }
 
     async function shareRankingImage() {
-      if (!rankingCurrentBlob) {
-        rankingStatus.textContent = "シェアできる画像がありません。";
-        return;
-      }
-      const row = rankingLatestRows[Number(rankingSelect.value)] || [];
+      if (!rankingCurrentBlob) return;
+      const row = rankingLatestRows[0] || [];
       const rank = String(row[RANKING_COLUMNS.rank] || "").trim();
       const program = String(row[RANKING_COLUMNS.programName] || "").trim();
       const title = String(row[RANKING_COLUMNS.episodeTitle] || "").trim();
@@ -992,22 +978,12 @@
             title: "TVerランキング",
             text: text
           });
-          rankingStatus.textContent = "シェアしました。";
         } catch (error) {
-          if (error.name !== "AbortError") {
-            rankingStatus.textContent = "シェアに失敗しました。";
-            console.error(error);
-          }
+          if (error.name !== "AbortError") console.error(error);
         }
-      } else {
-        rankingStatus.textContent = "Web Share APIが利用できません。画像を保存してからシェアしてください。";
       }
     }
 
-    rankingSelect.addEventListener("change", () => {
-      const row = rankingLatestRows[Number(rankingSelect.value)];
-      if (row) renderRankingImage(row);
-    });
     saveRankingButton.addEventListener("click", saveRankingImage);
     shareRankingButton.addEventListener("click", shareRankingImage);
 
