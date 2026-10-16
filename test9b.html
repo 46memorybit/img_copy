@@ -716,12 +716,12 @@
         program = program.slice(0, -1);
       }
       if (program !== originalProgram) program = program.slice(0, -1) + "…";
-      rankingCtx.fillText(program, padding, 68);
+      rankingCtx.fillText(program, padding, 92);
       const dateText = formatDate(timestamp);
       rankingCtx.font = `500 18px "Zen Kaku Gothic New", sans-serif`;
       rankingCtx.fillStyle = "#7d727a";
       rankingCtx.textAlign = "right";
-      rankingCtx.fillText(dateText, size - padding, 68);
+      rankingCtx.fillText(dateText, size - padding, 92);
     }
 
     function wrapRankingText(text, maxWidth) {
@@ -838,13 +838,35 @@
     function drawRankingLogo(logoImg) {
       if (!logoImg) return;
       const size = RANKING_CONFIG.IMAGE_SIZE;
-      const logoWidth = 120;
+      const logoWidth = 110;
       const logoHeight = (logoImg.naturalHeight / logoImg.naturalWidth) * logoWidth;
-      const x = size - logoWidth - 36;
-      const y = 100;
+      const x = size - logoWidth - 40;
+      const y = 28;
       rankingCtx.save();
-      rankingCtx.globalAlpha = 0.9;
+      rankingCtx.globalAlpha = 0.95;
       rankingCtx.drawImage(logoImg, x, y, logoWidth, logoHeight);
+      rankingCtx.restore();
+    }
+
+    function drawRankingTitle() {
+      const size = RANKING_CONFIG.IMAGE_SIZE;
+      rankingCtx.save();
+      rankingCtx.font = `900 42px "Zen Kaku Gothic New", sans-serif`;
+      rankingCtx.fillStyle = "#e86a9a";
+      rankingCtx.textAlign = "left";
+      rankingCtx.textBaseline = "middle";
+      rankingCtx.fillText("TVerランキング", 48, 42);
+      rankingCtx.restore();
+    }
+
+    function drawRankingSiteUrl() {
+      const size = RANKING_CONFIG.IMAGE_SIZE;
+      rankingCtx.save();
+      rankingCtx.font = `500 16px "Zen Kaku Gothic New", sans-serif`;
+      rankingCtx.fillStyle = "#7d727a";
+      rankingCtx.textAlign = "left";
+      rankingCtx.textBaseline = "bottom";
+      rankingCtx.fillText("https://meets.konnagi.com/", 36, size - 28);
       rankingCtx.restore();
     }
 
@@ -858,8 +880,10 @@
       const episodeId = String(row[RANKING_COLUMNS.episodeId] || "").trim();
       const logoImg = await loadLogo();
       drawRankingBackground();
+      drawRankingTitle();
       drawRankingHeader(programName, rankingLatestTimestamp);
       drawRankingEpisodeTitle(episodeTitle);
+      drawRankingSiteUrl();
       if (logoImg) drawRankingLogo(logoImg);
       if (!episodeId) {
         rankingSection.style.display = "none";
@@ -878,9 +902,11 @@
         if (version !== rankingRenderVersion) return;
         if (!img.naturalWidth || !img.naturalHeight) throw new Error("画像サイズを取得できませんでした。");
         drawRankingBackground();
+        drawRankingTitle();
         drawRankingHeader(programName, rankingLatestTimestamp);
         drawRankingThumbnail(img, row[RANKING_COLUMNS.rank]);
         drawRankingEpisodeTitle(episodeTitle);
+        drawRankingSiteUrl();
         if (logoImg) drawRankingLogo(logoImg);
         const blob = await new Promise((resolve, reject) => {
           rankingCanvas.toBlob(b => b ? resolve(b) : reject(new Error("画像の準備に失敗しました。")), "image/png");
@@ -969,7 +995,9 @@
       const rank = String(row[RANKING_COLUMNS.rank] || "").trim();
       const program = String(row[RANKING_COLUMNS.programName] || "").trim();
       const title = String(row[RANKING_COLUMNS.episodeTitle] || "").trim();
-      const text = `TVerランキング ${rank}位\n${program}\n${title}\n#サクラミーツ #TVer`;
+      const episodeId = String(row[RANKING_COLUMNS.episodeId] || "").trim();
+      const tverUrl = episodeId ? `https://tver.jp/episodes/${episodeId}?utm_medium=share` : "";
+      const text = `TVerランキング ${rank}位\n #サクラミーツ \n${title}\n\n🌸TVer🌸\n▷${tverUrl}\n📣サクラミーツ応援アプリ(非公式)📣\n▷https://meets.konnagi.com/`;
       const file = new File([rankingCurrentBlob], "tver-ranking.png", { type: "image/png" });
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
@@ -1301,6 +1329,42 @@
     }
     syncTopicInputs(readTopics(), true);
     loadEpisodes();
+
+    // =========================================================
+    // Pull to refresh (at top)
+    // =========================================================
+    let pullStartY = 0;
+    let isPulling = false;
+    const PULL_THRESHOLD = 80;
+
+    document.addEventListener("touchstart", (e) => {
+      if (window.scrollY <= 0) {
+        pullStartY = e.touches[0].clientY;
+        isPulling = true;
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (e) => {
+      if (!isPulling || window.scrollY > 0) return;
+      const currentY = e.touches[0].clientY;
+      const delta = currentY - pullStartY;
+      if (delta > 0 && delta < 150) {
+        // optional: visual feedback could be added here
+      }
+    }, { passive: true });
+
+    document.addEventListener("touchend", (e) => {
+      if (!isPulling) return;
+      const endY = e.changedTouches[0].clientY;
+      const delta = endY - pullStartY;
+      if (window.scrollY <= 0 && delta > PULL_THRESHOLD) {
+        loadLatestRanking();
+        if (typeof loadEpisodes === "function") loadEpisodes();
+      }
+      isPulling = false;
+      pullStartY = 0;
+    }, { passive: true });
+
     loadLatestRanking();
     updateNotificationStatus();
   </script>
